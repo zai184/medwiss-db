@@ -1,3 +1,13 @@
+## [Unreleased] - 2026-10-20 12-10
+### Added
+- **Pre-push guard** (`.private/githooks/pre-push`, wired via
+  `core.hooksPath`): GitHub only ever receives `refs/heads/main`, and only
+  commits whose diff is free of the VPS tokens extracted from
+  `.private/deploy.env`/`infra.md`. Verified: archive push blocked, leak-test
+  commit blocked, clean main push passes. Hook is local-only and never pushed.
+
+LOC added: ~45 | LOC removed: 0 | LOC total: ~98,405
+
 ## [Unreleased] - 2026-10-20 11-40
 ### Changed
 - **Published to GitHub** (`github.com/zai184/medwiss-db`, AGPL-3.0, public).

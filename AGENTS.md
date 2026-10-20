@@ -32,6 +32,9 @@ single-commit squash → `origin` = `github.com/zai184/medwiss-db`. The former
 96-commit history lives in branch `archive` → `backup` (NAS) — it contains
 old host details and the 2026-09-24 audit report; never push `archive` or the
 old tags to GitHub. `scripts/release.sh` tags on the new history from now on.
+Guard: `core.hooksPath` points at `.private/githooks` — its `pre-push` refuses
+every non-`main` ref to GitHub and greps outgoing commits for the `.private/`
+host tokens. Re-arm after a fresh clone: `git config core.hooksPath .private/githooks`.
 
 ## Overview
 
