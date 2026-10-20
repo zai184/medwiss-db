@@ -251,3 +251,8 @@ docs/audits/
 
 # Codegraph local index
 .codegraph/
+
+# Other agents' openspec adapters (we use omp)
+.cursor/
+.opencode/
+.pi/
