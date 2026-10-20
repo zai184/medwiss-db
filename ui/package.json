@@ -1,0 +1,40 @@
+{
+  "name": "medwiss-ui",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "gen:api": "openapi-typescript ../contracts/api/openapi.json -o src/lib/api-types.d.ts",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-static": "^3.0.10",
+    "@sveltejs/kit": "^2.70.3",
+    "@sveltejs/vite-plugin-svelte": "^4.0.4",
+    "@tailwindcss/postcss": "^4.3.3",
+    "autoprefixer": "^10.6.1",
+    "bun-types": "^1.4.3",
+    "openapi-typescript": "^7.13.0",
+    "postcss": "^8.5.30",
+    "svelte": "^5.57.2",
+    "svelte-check": "^4.7.6",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.21"
+  },
+  "dependencies": {
+    "@whoicd/icd11ect": "^1.8.0",
+    "axios": "^1.20.0",
+    "chart.js": "^4.5.1",
+    "isomorphic-dompurify": "^3.23.0",
+    "lucide-svelte": "^0.475.0",
+    "marked": "^18.1.1",
+    "mermaid": "^11.17.2",
+    "pdfjs-dist": "^6.4.299"
+  },
+  "type": "module"
+}

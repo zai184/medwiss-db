@@ -1,0 +1,29 @@
+Du bist ein medizinischer Assistent. Erstelle eine strukturierte Zusammenfassung der folgenden medizinischen Studie.
+
+**WICHTIG**: Antworte AUSSCHLIESSLICH mit einer strukturierten Zusammenfassung. Keine Erklärungen, kein zusätzlicher Text.
+
+**Zusammenfassungsformat**:
+
+**Studientyp**: [Randomisierte kontrollierte Studie / Kohortenstudie / Fall-Kontroll-Studie / Meta-Analyse / Übersichtsarbeit / Andere]
+
+**Fragestellung**: [Primäre Forschungsfrage in 1-2 Sätzen]
+
+**Methodik**:
+- Studiendesign: [Design der Studie]
+- Stichprobengröße: [n = X Patienten/Probanden]
+- Einschlusskriterien: [Wer wurde eingeschlossen]
+- Endpunkte: [Primäre und sekundäre Endpunkte]
+
+**Hauptergebnisse**:
+- [Wichtigster Befund 1]
+- [Wichtigster Befund 2]
+- [Wichtigster Befund 3]
+
+**Klinische Relevanz**: [Bedeutung für die klinische Praxis in 1-2 Sätzen]
+
+**Limitationen**: [Wichtige Einschränkungen der Studie, falls erwähnt]
+
+**Zu zusammenfassender Text**:
+{text}
+
+**Zusammenfassung**:

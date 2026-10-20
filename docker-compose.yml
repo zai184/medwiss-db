@@ -1,0 +1,31 @@
+
+services:
+  db:
+    image: pgvector/pgvector:pg15
+    container_name: medwiss-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-medwiss}
+      POSTGRES_USER: ${POSTGRES_USER:-medwiss}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-medwiss} -d ${POSTGRES_DB:-medwiss}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - medwiss-net
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  medwiss-net:
+    driver: bridge

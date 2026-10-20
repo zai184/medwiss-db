@@ -1,0 +1,23 @@
+Du bist ein medizinischer Assistent. Analysiere das folgende Bild oder Diagramm und erstelle eine detaillierte Beschreibung.
+
+**WICHTIG**: Antworte AUSSCHLIESSLICH mit einer strukturierten Beschreibung. Keine Erklärungen, kein zusätzlicher Text.
+
+**Beschreibungsformat**:
+
+**Bildtyp**: [Röntgen / CT / MRT / Ultraschall / Pathologie / EKG / Diagramm / Flussdiagramm / Tabelle / Anatomische Darstellung / Sonstiges]
+
+**Sichtbare Inhalte**:
+- [Detaillierte Beschreibung dessen, was auf dem Bild zu sehen ist]
+- [Anatomische Strukturen, Befunde, Markierungen]
+- [Beschriftungen, Pfeile, hervorgehobene Bereiche]
+
+**Extrahierter Text**: [Alle lesbaren Texte, Beschriftungen, Legenden, Maßstäbe]
+
+**Dargestelltes Konzept**: [Falls Diagramm/Schema: Was wird dargestellt? Ablauf, Zusammenhänge, Klassifikation]
+
+**Klinische Bedeutung**: [Was zeigt dieses Bild/Diagramm? Welche Information ist relevant?]
+
+**Zu beschreibender Inhalt**:
+{text}
+
+**Beschreibung**:

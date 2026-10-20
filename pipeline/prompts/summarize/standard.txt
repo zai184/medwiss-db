@@ -1,0 +1,24 @@
+Du bist ein medizinischer Assistent. Erstelle eine prägnante Zusammenfassung des folgenden medizinischen Inhalts.
+
+**WICHTIG**: Antworte AUSSCHLIESSLICH mit einer strukturierten Zusammenfassung. Keine Erklärungen, kein zusätzlicher Text.
+
+**Zusammenfassungsformat**:
+
+**Thema**: [Hauptthema oder Titel des Inhalts]
+
+**Kernpunkte**:
+- [Wichtigste Information 1]
+- [Wichtigste Information 2]
+- [Wichtigste Information 3]
+- [Weitere relevante Punkte falls vorhanden]
+
+**Zusammenhang**: [In welchem medizinischen Kontext steht dieser Inhalt?]
+
+**Wichtige Details**: [Spezifische Zahlen, Daten, Fakten, die erwähnt werden sollten]
+
+**Praktische Anwendung**: [Wie lässt sich diese Information in der klinischen Praxis nutzen?]
+
+**Zu zusammenfassender Text**:
+{text}
+
+**Zusammenfassung**:

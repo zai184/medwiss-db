@@ -1,0 +1,5840 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Medizinische Wissensdatenbank API",
+    "description": "REST-API f\u00fcr die medizinische Wissensdatenbank",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/v1/entries/dokumenttypen": {
+      "get": {
+        "tags": [
+          "entries"
+        ],
+        "summary": "Get Dokumenttypen",
+        "description": "Get all distinct dokumenttyp values from entries.",
+        "operationId": "get_dokumenttypen_api_v1_entries_dokumenttypen_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "title": "Response Get Dokumenttypen Api V1 Entries Dokumenttypen Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/entries": {
+      "get": {
+        "tags": [
+          "entries"
+        ],
+        "summary": "List Entries",
+        "description": "Get a paginated list of knowledge entries with optional filters.",
+        "operationId": "list_entries_api_v1_entries_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 10000,
+              "minimum": 1,
+              "description": "Number of entries to return",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Number of entries to return"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of entries to skip",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Number of entries to skip"
+          },
+          {
+            "name": "dokumenttyp",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Filter by dokumenttyp (can be specified multiple times)",
+              "default": [],
+              "title": "Dokumenttyp"
+            },
+            "description": "Filter by dokumenttyp (can be specified multiple times)"
+          },
+          {
+            "name": "schwierigkeit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by schwierigkeit",
+              "title": "Schwierigkeit"
+            },
+            "description": "Filter by schwierigkeit"
+          },
+          {
+            "name": "fach",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by fachgebiet names",
+              "title": "Fach"
+            },
+            "description": "Filter by fachgebiet names"
+          },
+          {
+            "name": "diagnose",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by diagnose names",
+              "title": "Diagnose"
+            },
+            "description": "Filter by diagnose names"
+          },
+          {
+            "name": "symptom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by symptom names",
+              "title": "Symptom"
+            },
+            "description": "Filter by symptom names"
+          },
+          {
+            "name": "source_path",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter: entries whose source_path contains this substring (e.g. '2_Notfall/00_Notfall_SOPs')",
+              "title": "Source Path"
+            },
+            "description": "Filter: entries whose source_path contains this substring (e.g. '2_Notfall/00_Notfall_SOPs')"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntryListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "entries"
+        ],
+        "summary": "Create Entry",
+        "description": "Create a new knowledge entry.",
+        "operationId": "create_entry_api_v1_entries_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EntryCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntryResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/entries/{entry_id}/tag-suggestions": {
+      "get": {
+        "tags": [
+          "entries"
+        ],
+        "summary": "Get Entry Tag Suggestions",
+        "description": "Get folder-path Fachgebiet suggestions for an entry.",
+        "operationId": "get_entry_tag_suggestions_api_v1_entries__entry_id__tag_suggestions_get",
+        "parameters": [
+          {
+            "name": "entry_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Entry Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntryTagSuggestionsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/entries/{entry_id}/tag-suggestions/apply": {
+      "post": {
+        "tags": [
+          "entries"
+        ],
+        "summary": "Apply Entry Tag Suggestions",
+        "description": "Apply missing folder hierarchy labels to entry metadata.",
+        "operationId": "apply_entry_tag_suggestions_api_v1_entries__entry_id__tag_suggestions_apply_post",
+        "parameters": [
+          {
+            "name": "entry_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Entry Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntryTagSuggestionsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/entries/{entry_id}": {
+      "get": {
+        "tags": [
+          "entries"
+        ],
+        "summary": "Get Entry",
+        "description": "Get a single knowledge entry by ID.",
+        "operationId": "get_entry_api_v1_entries__entry_id__get",
+        "parameters": [
+          {
+            "name": "entry_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Entry Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntryResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "entries"
+        ],
+        "summary": "Update Entry",
+        "description": "Update an existing knowledge entry.",
+        "operationId": "update_entry_api_v1_entries__entry_id__put",
+        "parameters": [
+          {
+            "name": "entry_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Entry Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EntryUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntryResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "entries"
+        ],
+        "summary": "Delete Entry",
+        "description": "Delete a knowledge entry.",
+        "operationId": "delete_entry_api_v1_entries__entry_id__delete",
+        "parameters": [
+          {
+            "name": "entry_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Entry Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/search": {
+      "get": {
+        "tags": [
+          "search"
+        ],
+        "summary": "Search",
+        "description": "Keyword search over entries: ILIKE substring matching with tier ranking.\n\nOptional filters (fachgebiet, dokumenttyp, folder) are ANDed on top of the\nkeyword match. With only filters set (empty q), lists all matching entries.",
+        "operationId": "search_api_v1_search_get",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Search query string (optional when filters are set)",
+              "default": "",
+              "title": "Q"
+            },
+            "description": "Search query string (optional when filters are set)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Number of results to return",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Number of results to return"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of results to skip",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Number of results to skip"
+          },
+          {
+            "name": "fachgebiet",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Fachgebiet id or name",
+              "title": "Fachgebiet"
+            },
+            "description": "Fachgebiet id or name"
+          },
+          {
+            "name": "dokumenttyp",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Dokumenttyp id or name",
+              "title": "Dokumenttyp"
+            },
+            "description": "Dokumenttyp id or name"
+          },
+          {
+            "name": "folder",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Top-level source folder segment",
+              "title": "Folder"
+            },
+            "description": "Top-level source folder segment"
+          },
+          {
+            "name": "diagnose",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Diagnose id or name",
+              "title": "Diagnose"
+            },
+            "description": "Diagnose id or name"
+          },
+          {
+            "name": "symptom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Symptom id or name",
+              "title": "Symptom"
+            },
+            "description": "Symptom id or name"
+          },
+          {
+            "name": "ordner_label",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Ordner-Label id or name",
+              "title": "Ordner Label"
+            },
+            "description": "Ordner-Label id or name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/search/chunks": {
+      "get": {
+        "tags": [
+          "search"
+        ],
+        "summary": "Search Chunks Endpoint",
+        "description": "Search AWMF chunks by vector similarity (Qwen3-Embedding via CPU sidecar).",
+        "operationId": "search_chunks_endpoint_api_v1_search_chunks_get",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Search query string (German)",
+              "title": "Q"
+            },
+            "description": "Search query string (German)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Number of results to return",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Number of results to return"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of results to skip",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Number of results to skip"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChunkSearchResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/search/chunks/rag": {
+      "get": {
+        "tags": [
+          "search"
+        ],
+        "summary": "Rag Chunks Endpoint",
+        "description": "Answer a question over AWMF chunks: retrieve top-k, prompt the 9B, return answer + sources.",
+        "operationId": "rag_chunks_endpoint_api_v1_search_chunks_rag_get",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Question to answer (German)",
+              "title": "Q"
+            },
+            "description": "Question to answer (German)"
+          },
+          {
+            "name": "top_k",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 10,
+              "minimum": 1,
+              "description": "Number of passages fed to the model",
+              "default": 6,
+              "title": "Top K"
+            },
+            "description": "Number of passages fed to the model"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RagResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/fachgebiete": {
+      "get": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Get All Fachgebiete",
+        "description": "Get all Fachgebiete (medical specialties).",
+        "operationId": "get_all_fachgebiete_api_v1_fachgebiete_get",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10000,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "reviewed_only",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Reviewed Only"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/api__routers__classifications__FachgebietResponse"
+                  },
+                  "title": "Response Get All Fachgebiete Api V1 Fachgebiete Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Create Fachgebiet",
+        "description": "Create a new Fachgebiet (Admin only).",
+        "operationId": "create_fachgebiet_api_v1_fachgebiete_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FachgebietCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api__routers__classifications__FachgebietResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/fachgebiete/{fach_id}": {
+      "get": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Get Fachgebiet",
+        "description": "Get a single Fachgebiet by ID.",
+        "operationId": "get_fachgebiet_api_v1_fachgebiete__fach_id__get",
+        "parameters": [
+          {
+            "name": "fach_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Fach Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api__routers__classifications__FachgebietResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Update Fachgebiet",
+        "description": "Update a Fachgebiet (Admin only).",
+        "operationId": "update_fachgebiet_api_v1_fachgebiete__fach_id__put",
+        "parameters": [
+          {
+            "name": "fach_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Fach Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FachgebietUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api__routers__classifications__FachgebietResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Delete Fachgebiet",
+        "description": "Delete a Fachgebiet (Admin only).",
+        "operationId": "delete_fachgebiet_api_v1_fachgebiete__fach_id__delete",
+        "parameters": [
+          {
+            "name": "fach_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Fach Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/fachgebiete/{fach_id}/entries": {
+      "get": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Get Entries By Fachgebiet",
+        "description": "Get all knowledge entries associated with a specific Fachgebiet.",
+        "operationId": "get_entries_by_fachgebiet_api_v1_fachgebiete__fach_id__entries_get",
+        "parameters": [
+          {
+            "name": "fach_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Fach Id"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/KnowledgeEntrySummary"
+                  },
+                  "title": "Response Get Entries By Fachgebiet Api V1 Fachgebiete  Fach Id  Entries Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/diagnosen": {
+      "get": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Get All Diagnosen",
+        "description": "Get all Diagnosen (diagnoses).",
+        "operationId": "get_all_diagnosen_api_v1_diagnosen_get",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10000,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/api__routers__classifications__DiagnoseResponse"
+                  },
+                  "title": "Response Get All Diagnosen Api V1 Diagnosen Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Create Diagnose",
+        "description": "Create a new Diagnose (Admin only).",
+        "operationId": "create_diagnose_api_v1_diagnosen_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiagnoseCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api__routers__classifications__DiagnoseResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/diagnosen/{diagnose_id}": {
+      "get": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Get Diagnose",
+        "description": "Get a single Diagnose by ID.",
+        "operationId": "get_diagnose_api_v1_diagnosen__diagnose_id__get",
+        "parameters": [
+          {
+            "name": "diagnose_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Diagnose Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api__routers__classifications__DiagnoseResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Update Diagnose",
+        "description": "Update a Diagnose (Admin only).",
+        "operationId": "update_diagnose_api_v1_diagnosen__diagnose_id__put",
+        "parameters": [
+          {
+            "name": "diagnose_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Diagnose Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiagnoseUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api__routers__classifications__DiagnoseResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Delete Diagnose",
+        "description": "Delete a Diagnose (Admin only).",
+        "operationId": "delete_diagnose_api_v1_diagnosen__diagnose_id__delete",
+        "parameters": [
+          {
+            "name": "diagnose_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Diagnose Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/diagnosen/{diagnose_id}/entries": {
+      "get": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Get Entries By Diagnose",
+        "description": "Get all knowledge entries associated with a specific Diagnose.",
+        "operationId": "get_entries_by_diagnose_api_v1_diagnosen__diagnose_id__entries_get",
+        "parameters": [
+          {
+            "name": "diagnose_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Diagnose Id"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/KnowledgeEntrySummary"
+                  },
+                  "title": "Response Get Entries By Diagnose Api V1 Diagnosen  Diagnose Id  Entries Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/symptome": {
+      "get": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Get All Symptome",
+        "description": "Get all Symptome (symptoms).",
+        "operationId": "get_all_symptome_api_v1_symptome_get",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10000,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/api__routers__classifications__SymptomResponse"
+                  },
+                  "title": "Response Get All Symptome Api V1 Symptome Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Create Symptom",
+        "description": "Create a new Symptom (Admin only).",
+        "operationId": "create_symptom_api_v1_symptome_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SymptomCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api__routers__classifications__SymptomResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/symptome/{symptom_id}": {
+      "get": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Get Symptom",
+        "description": "Get a single Symptom by ID.",
+        "operationId": "get_symptom_api_v1_symptome__symptom_id__get",
+        "parameters": [
+          {
+            "name": "symptom_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Symptom Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api__routers__classifications__SymptomResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Update Symptom",
+        "description": "Update a Symptom (Admin only).",
+        "operationId": "update_symptom_api_v1_symptome__symptom_id__put",
+        "parameters": [
+          {
+            "name": "symptom_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Symptom Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SymptomUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api__routers__classifications__SymptomResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Delete Symptom",
+        "description": "Delete a Symptom (Admin only).",
+        "operationId": "delete_symptom_api_v1_symptome__symptom_id__delete",
+        "parameters": [
+          {
+            "name": "symptom_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Symptom Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/symptome/{symptom_id}/entries": {
+      "get": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Get Entries By Symptom",
+        "description": "Get all knowledge entries associated with a specific Symptom.",
+        "operationId": "get_entries_by_symptom_api_v1_symptome__symptom_id__entries_get",
+        "parameters": [
+          {
+            "name": "symptom_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Symptom Id"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/KnowledgeEntrySummary"
+                  },
+                  "title": "Response Get Entries By Symptom Api V1 Symptome  Symptom Id  Entries Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/dokumenttypen": {
+      "get": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Get All Dokumenttypen",
+        "description": "Get all Dokumenttypen (document types).",
+        "operationId": "get_all_dokumenttypen_api_v1_dokumenttypen_get",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10000,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "reviewed_only",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Reviewed Only"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DokumenttypResponse"
+                  },
+                  "title": "Response Get All Dokumenttypen Api V1 Dokumenttypen Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Create Dokumenttyp",
+        "description": "Create a new Dokumenttyp (Admin only).",
+        "operationId": "create_dokumenttyp_api_v1_dokumenttypen_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DokumenttypCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DokumenttypResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/dokumenttypen/{dokumenttyp_id}": {
+      "put": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Update Dokumenttyp",
+        "description": "Rename a Dokumenttyp (Admin only).",
+        "operationId": "update_dokumenttyp_api_v1_dokumenttypen__dokumenttyp_id__put",
+        "parameters": [
+          {
+            "name": "dokumenttyp_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Dokumenttyp Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DokumenttypUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DokumenttypResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Delete Dokumenttyp",
+        "description": "Delete a Dokumenttyp (Admin only). Entries keep their legacy string (FK SET NULL).",
+        "operationId": "delete_dokumenttyp_api_v1_dokumenttypen__dokumenttyp_id__delete",
+        "parameters": [
+          {
+            "name": "dokumenttyp_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Dokumenttyp Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ordner-labels": {
+      "get": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Get All Ordner Labels",
+        "description": "Get all Ordner-Labels (folder labels).",
+        "operationId": "get_all_ordner_labels_api_v1_ordner_labels_get",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10000,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "reviewed_only",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Reviewed Only"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrdnerLabelResponse"
+                  },
+                  "title": "Response Get All Ordner Labels Api V1 Ordner Labels Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Create Ordner Label",
+        "description": "Create a new Ordner-Label (Admin only).",
+        "operationId": "create_ordner_label_api_v1_ordner_labels_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrdnerLabelCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdnerLabelResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ordner-labels/{ordner_label_id}": {
+      "put": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Update Ordner Label",
+        "description": "Rename an Ordner-Label (Admin only).",
+        "operationId": "update_ordner_label_api_v1_ordner_labels__ordner_label_id__put",
+        "parameters": [
+          {
+            "name": "ordner_label_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Ordner Label Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrdnerLabelUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdnerLabelResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Delete Ordner Label",
+        "description": "Delete an Ordner-Label (Admin only). Junction rows cascade.",
+        "operationId": "delete_ordner_label_api_v1_ordner_labels__ordner_label_id__delete",
+        "parameters": [
+          {
+            "name": "ordner_label_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Ordner Label Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/resolve-labels": {
+      "post": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Resolve Labels",
+        "description": "Resolve string labels to lookup IDs (creates missing rows).",
+        "operationId": "resolve_labels_api_v1_resolve_labels_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResolveLabelsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResolveLabelsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pending-review": {
+      "get": {
+        "tags": [
+          "classifications"
+        ],
+        "summary": "Get Pending Review",
+        "description": "List classification lookups awaiting admin review.",
+        "operationId": "get_pending_review_api_v1_pending_review_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PendingReviewResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/api/v1/stats/overview": {
+      "get": {
+        "tags": [
+          "stats"
+        ],
+        "summary": "Get Stats Overview",
+        "description": "Get overview statistics for the dashboard.",
+        "operationId": "get_stats_overview_api_v1_stats_overview_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsOverview"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stats/by-category": {
+      "get": {
+        "tags": [
+          "stats"
+        ],
+        "summary": "Get Stats By Category",
+        "description": "Get statistics grouped by dokumenttyp.",
+        "operationId": "get_stats_by_category_api_v1_stats_by_category_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CategoryStats"
+                  },
+                  "type": "array",
+                  "title": "Response Get Stats By Category Api V1 Stats By Category Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stats/by-fach": {
+      "get": {
+        "tags": [
+          "stats"
+        ],
+        "summary": "Get Stats By Fach",
+        "description": "Get statistics grouped by Fachgebiet.",
+        "operationId": "get_stats_by_fach_api_v1_stats_by_fach_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/FachStats"
+                  },
+                  "type": "array",
+                  "title": "Response Get Stats By Fach Api V1 Stats By Fach Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stats/by-diagnose": {
+      "get": {
+        "tags": [
+          "stats"
+        ],
+        "summary": "Get Stats By Diagnose",
+        "description": "Get statistics grouped by Diagnose.",
+        "operationId": "get_stats_by_diagnose_api_v1_stats_by_diagnose_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DiagnoseStats"
+                  },
+                  "title": "Response Get Stats By Diagnose Api V1 Stats By Diagnose Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stats/recent": {
+      "get": {
+        "tags": [
+          "stats"
+        ],
+        "summary": "Get Recent Entries",
+        "description": "Get the most recent entries for the activity list.",
+        "operationId": "get_recent_entries_api_v1_stats_recent_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 5,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecentEntry"
+                  },
+                  "title": "Response Get Recent Entries Api V1 Stats Recent Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pipeline/process-file": {
+      "post": {
+        "tags": [
+          "pipeline"
+        ],
+        "summary": "Process Uploaded File",
+        "description": "Process an uploaded medical document.\n\nAccepts a file upload, extracts text using OCR or direct reading,\nand returns the extracted text.\n\nSupported file types:\n- Images: PNG, JPG, JPEG, BMP, TIFF, PDF\n- Audio: MP3, WAV, M4A, OGG, FLAC\n- Text: TXT, MD, CSV, JSON, XML, YAML\n\nArgs:\n    file: Uploaded file to process\n\nReturns:\n    PipelineResult with extracted text and metadata\n\nRaises:\n    413: File size exceeds maximum allowed size\n    422: Invalid file type or processing error\n    500: Internal server error during processing",
+        "operationId": "process_uploaded_file_api_v1_pipeline_process_file_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_process_uploaded_file_api_v1_pipeline_process_file_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PipelineResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/files/entries/{entry_id}/view": {
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "View File",
+        "description": "Serve a file inline with proper MIME type detection.\n\nReturns the file with Content-Disposition: inline for browser viewing.",
+        "operationId": "view_file_api_v1_files_entries__entry_id__view_get",
+        "parameters": [
+          {
+            "name": "entry_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Entry Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/files/chunks/{chunk_id}/view": {
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "View Chunk File",
+        "description": "Serve an AWMF chunk's source PDF inline (scoped to the AWMF corpus root).",
+        "operationId": "view_chunk_file_api_v1_files_chunks__chunk_id__view_get",
+        "parameters": [
+          {
+            "name": "chunk_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Chunk Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/files/entries/{entry_id}/download": {
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Download File",
+        "description": "Force download a file with proper filename.\n\nReturns the file with Content-Disposition: attachment for downloading.",
+        "operationId": "download_file_api_v1_files_entries__entry_id__download_get",
+        "parameters": [
+          {
+            "name": "entry_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Entry Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/files/entries/{entry_id}/info": {
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Get File Info",
+        "description": "Return metadata about the entry's source file.\n\nReturns: exists, mime_type, size, can_inline",
+        "operationId": "get_file_info_api_v1_files_entries__entry_id__info_get",
+        "parameters": [
+          {
+            "name": "entry_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Entry Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileInfoResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/files/admin/sync-status": {
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Get Sync Status",
+        "description": "Get file synchronization status \u2014 cheap enough for 10 s UI polling.\n\nServed from the in-memory sync state (updated by the watcher and by\nreconcile passes); never re-hashes the source tree.",
+        "operationId": "get_sync_status_api_v1_files_admin_sync_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncStatusResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/files/admin/sync": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Trigger Manual Sync",
+        "description": "Trigger manual file synchronization (admin only).\n\nRuns a full sync operation:\n- Imports new files\n- Updates modified files\n- Archives entries for deleted files",
+        "operationId": "trigger_manual_sync_api_v1_files_admin_sync_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncTriggerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/files/sync": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Trigger Lightweight Sync",
+        "description": "Lightweight file sync \u2014 link new files without running AI pipeline.\n\nScans source folders and creates database entries for files not yet\ntracked. Uses link-only import (no OCR/classification), which is fast\nand doesn't require Llamaserver.\n\nSafe for any user to trigger. For full AI processing, use Admin sync.",
+        "operationId": "trigger_lightweight_sync_api_v1_files_sync_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncTriggerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/entries/{entry_id}/transcribe": {
+      "post": {
+        "tags": [
+          "entries"
+        ],
+        "summary": "Transcribe Entry",
+        "description": "Transcribe (OCR-extract) a knowledge entry's linked file \u2014 no LLM.\n\nRuns the on-demand OCR seam for image/PDF, or a direct read for text\nfiles. Returns only the extracted raw text; no summarization.\n\nRaises:\n    404: Entry not found\n    400: Entry has no linked file\n    409/502: No OCR backend available / backends failed (image/PDF)",
+        "operationId": "transcribe_entry_api_v1_entries__entry_id__transcribe_post",
+        "parameters": [
+          {
+            "name": "entry_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Entry Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TranscribeRequest",
+                "default": {}
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranscribeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/entries/{entry_id}/summarize": {
+      "post": {
+        "tags": [
+          "entries"
+        ],
+        "summary": "Summarize Entry",
+        "description": "Summarize a knowledge entry's linked file.\n\nExtracts text from the entry's linked file (OCR for image/PDF, direct\nread for text), then generates a summary using the specified AI\nprovider and skill.\n\nArgs:\n    entry_id: ID of the knowledge entry to summarize\n    request: Summarization request with skill, provider, and optional model\n\nReturns:\n    SummarizeResponse with extracted text, summary, and metadata\n\nRaises:\n    404: Entry not found\n    400: Entry has no linked file or invalid skill\n    422: Validation error\n    500: Processing error",
+        "operationId": "summarize_entry_api_v1_entries__entry_id__summarize_post",
+        "parameters": [
+          {
+            "name": "entry_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Entry Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SummarizeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummarizeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sources": {
+      "get": {
+        "tags": [
+          "sources"
+        ],
+        "summary": "Get Sources",
+        "operationId": "get_sources_api_v1_sources_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SourceInfo"
+                  },
+                  "type": "array",
+                  "title": "Response Get Sources Api V1 Sources Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/classify-from-filename": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Classify From Filename",
+        "description": "Classify entries deterministically by regex-matching folder + filename\nagainst the classification library (data/classification_library.txt).\n\nNo LLM \u2014 instant and reproducible. Fachgebiet from folder, Diagnose and\nSymptom from filename. Then ICD-11 codes are enriched via the WHO API\n(optional \u2014 requires ICD11_CLIENT_ID/SECRET in .env).",
+        "operationId": "classify_from_filename_api_v1_admin_classify_from_filename_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClassifyFromFilenameRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/icd11/token": {
+      "get": {
+        "tags": [
+          "icd11"
+        ],
+        "summary": "Get Icd11 Token",
+        "description": "Return an OAuth2 token for the WHO ICD-11 ECT browser.\n\nThe ECT calls this via its ``getNewTokenFunction`` callback.",
+        "operationId": "get_icd11_token_api_v1_icd11_token_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "type": "object",
+                  "title": "Response Get Icd11 Token Api V1 Icd11 Token Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/references": {
+      "get": {
+        "tags": [
+          "references"
+        ],
+        "summary": "Get References",
+        "description": "Return medical resource links parsed live from medlinks.txt.",
+        "operationId": "get_references_api_v1_references_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Section"
+                  },
+                  "type": "array",
+                  "title": "Response Get References Api V1 References Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pubmed/search": {
+      "get": {
+        "tags": [
+          "pubmed"
+        ],
+        "summary": "Search Pubmed",
+        "description": "Search PubMed with field filters, return metadata + inline abstract per result.",
+        "operationId": "search_pubmed_api_v1_pubmed_search_get",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Free-text search term",
+              "default": "",
+              "title": "Q"
+            },
+            "description": "Free-text search term"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Restrict to title field",
+              "default": "",
+              "title": "Title"
+            },
+            "description": "Restrict to title field"
+          },
+          {
+            "name": "author",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Restrict to author field",
+              "default": "",
+              "title": "Author"
+            },
+            "description": "Restrict to author field"
+          },
+          {
+            "name": "ptype",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Publication type (case_reports, clinical_study, clinical_trial, dataset, review)",
+              "title": "Ptype"
+            },
+            "description": "Publication type (case_reports, clinical_study, clinical_trial, dataset, review)"
+          },
+          {
+            "name": "publisher",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Restrict to journal/publisher",
+              "default": "",
+              "title": "Publisher"
+            },
+            "description": "Restrict to journal/publisher"
+          },
+          {
+            "name": "date_preset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Date preset: 1y, 5y, 10y, custom",
+              "title": "Date Preset"
+            },
+            "description": "Date preset: 1y, 5y, 10y, custom"
+          },
+          {
+            "name": "date_from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Custom range start (YYYY/MM/DD)",
+              "title": "Date From"
+            },
+            "description": "Custom range start (YYYY/MM/DD)"
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Custom range end (YYYY/MM/DD)",
+              "title": "Date To"
+            },
+            "description": "Custom range end (YYYY/MM/DD)"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^(relevance|pub_date|Author|JournalName)$",
+              "default": "relevance",
+              "title": "Sort"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 10,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PubmedSearchResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health Check",
+        "description": "Health check endpoint.",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/version": {
+      "get": {
+        "summary": "Version Info",
+        "description": "Release version (single source: pyproject.toml [project].version).",
+        "operationId": "version_info_api_v1_version_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Body_process_uploaded_file_api_v1_pipeline_process_file_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "description": "Medical document to process"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_process_uploaded_file_api_v1_pipeline_process_file_post"
+      },
+      "CategoryStats": {
+        "properties": {
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "percentage": {
+            "type": "number",
+            "title": "Percentage"
+          }
+        },
+        "type": "object",
+        "required": [
+          "category",
+          "count",
+          "percentage"
+        ],
+        "title": "CategoryStats",
+        "description": "Statistics per category."
+      },
+      "ChunkResultItem": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "source_type": {
+            "type": "string",
+            "title": "Source Type"
+          },
+          "source_path": {
+            "type": "string",
+            "title": "Source Path"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "awmf": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Awmf"
+          },
+          "society": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Society"
+          },
+          "page": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page"
+          },
+          "seq": {
+            "type": "integer",
+            "title": "Seq"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "document_id": {
+            "type": "integer",
+            "title": "Document Id"
+          },
+          "score": {
+            "type": "number",
+            "title": "Score"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "source_type",
+          "source_path",
+          "title",
+          "seq",
+          "text",
+          "document_id",
+          "score"
+        ],
+        "title": "ChunkResultItem",
+        "description": "A single AWMF chunk-search hit (passage-level, not an entry)."
+      },
+      "ChunkSearchResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ChunkResultItem"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "query": {
+            "type": "string",
+            "title": "Query"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset",
+          "query"
+        ],
+        "title": "ChunkSearchResponse",
+        "description": "Response model for AWMF chunk search."
+      },
+      "ClassifyFromFilenameRequest": {
+        "properties": {
+          "force": {
+            "type": "boolean",
+            "title": "Force",
+            "default": false
+          },
+          "dry_run": {
+            "type": "boolean",
+            "title": "Dry Run",
+            "default": true
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limit"
+          }
+        },
+        "type": "object",
+        "title": "ClassifyFromFilenameRequest"
+      },
+      "DiagnoseCreate": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "beschreibung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Beschreibung"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "name"
+        ],
+        "title": "DiagnoseCreate",
+        "description": "Schema for creating a Diagnose."
+      },
+      "DiagnoseStats": {
+        "properties": {
+          "diagnose_id": {
+            "type": "integer",
+            "title": "Diagnose Id"
+          },
+          "diagnose_name": {
+            "type": "string",
+            "title": "Diagnose Name"
+          },
+          "diagnose_code": {
+            "type": "string",
+            "title": "Diagnose Code"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "diagnose_id",
+          "diagnose_name",
+          "diagnose_code",
+          "count"
+        ],
+        "title": "DiagnoseStats",
+        "description": "Statistics per Diagnose."
+      },
+      "DiagnoseUpdate": {
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "beschreibung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Beschreibung"
+          }
+        },
+        "type": "object",
+        "title": "DiagnoseUpdate",
+        "description": "Schema for updating a Diagnose."
+      },
+      "DokumenttypCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "DokumenttypCreate",
+        "description": "Schema for creating a Dokumenttyp."
+      },
+      "DokumenttypResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "needs_review": {
+            "type": "boolean",
+            "title": "Needs Review",
+            "default": false
+          },
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "default": "seed"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "DokumenttypResponse",
+        "description": "Response model for a document type."
+      },
+      "DokumenttypUpdate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "DokumenttypUpdate",
+        "description": "Schema for renaming a Dokumenttyp."
+      },
+      "EntryCreate": {
+        "properties": {
+          "titel": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Titel"
+          },
+          "zusammenfassung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zusammenfassung"
+          },
+          "inhalt": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Inhalt"
+          },
+          "quelle": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quelle"
+          },
+          "schwierigkeit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Schwierigkeit"
+          },
+          "unterkategorie": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unterkategorie",
+            "description": "Subfolder name (e.g., Notaufnahme, Kardio, Gyn)"
+          },
+          "dokumenttyp": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dokumenttyp",
+            "description": "Document type (Leitlinie, SOP, Studie, \u2026)"
+          },
+          "dokumenttyp_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dokumenttyp Id"
+          },
+          "source_hierarchy": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Source Hierarchy",
+            "description": "Folder-derived labels"
+          },
+          "source_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Path"
+          },
+          "file_hash": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Hash",
+            "description": "SHA-256 hash of source file"
+          },
+          "fachgebiet_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Fachgebiet Ids",
+            "default": []
+          },
+          "diagnose_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Diagnose Ids",
+            "default": []
+          },
+          "symptom_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Symptom Ids",
+            "default": []
+          },
+          "ordner_label_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Ordner Label Ids",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "titel",
+          "inhalt"
+        ],
+        "title": "EntryCreate",
+        "description": "Model for creating a new knowledge entry."
+      },
+      "EntryListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/EntryResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "EntryListResponse",
+        "description": "Response model for a paginated list of entries."
+      },
+      "EntryResponse": {
+        "properties": {
+          "titel": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Titel"
+          },
+          "zusammenfassung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zusammenfassung"
+          },
+          "inhalt": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Inhalt"
+          },
+          "quelle": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quelle"
+          },
+          "schwierigkeit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Schwierigkeit"
+          },
+          "unterkategorie": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unterkategorie",
+            "description": "Subfolder name (e.g., Notaufnahme, Kardio, Gyn)"
+          },
+          "dokumenttyp": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dokumenttyp",
+            "description": "Document type (Leitlinie, SOP, Studie, \u2026)"
+          },
+          "dokumenttyp_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dokumenttyp Id"
+          },
+          "source_hierarchy": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Source Hierarchy",
+            "description": "Folder-derived labels"
+          },
+          "source_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Path"
+          },
+          "file_hash": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Hash",
+            "description": "SHA-256 hash of source file"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "version": {
+            "type": "integer",
+            "title": "Version"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "created_by": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created By"
+          },
+          "updated_by": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated By"
+          },
+          "fachgebiete": {
+            "items": {
+              "$ref": "#/components/schemas/api__models__FachgebietResponse"
+            },
+            "type": "array",
+            "title": "Fachgebiete",
+            "default": []
+          },
+          "diagnosen": {
+            "items": {
+              "$ref": "#/components/schemas/api__models__DiagnoseResponse"
+            },
+            "type": "array",
+            "title": "Diagnosen",
+            "default": []
+          },
+          "symptome": {
+            "items": {
+              "$ref": "#/components/schemas/api__models__SymptomResponse"
+            },
+            "type": "array",
+            "title": "Symptome",
+            "default": []
+          },
+          "dokumenttyp_ref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DokumenttypResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ordner_labels": {
+            "items": {
+              "$ref": "#/components/schemas/OrdnerLabelResponse"
+            },
+            "type": "array",
+            "title": "Ordner Labels",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "titel",
+          "inhalt",
+          "id",
+          "version",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "EntryResponse",
+        "description": "Response model for a knowledge entry."
+      },
+      "EntryTagSuggestionsResponse": {
+        "properties": {
+          "source_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Path"
+          },
+          "unterkategorie": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unterkategorie"
+          },
+          "dokumenttyp": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dokumenttyp"
+          },
+          "stored_dokumenttyp": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stored Dokumenttyp"
+          },
+          "hierarchy_labels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Hierarchy Labels",
+            "default": []
+          },
+          "stored_hierarchy": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Stored Hierarchy",
+            "default": []
+          },
+          "missing_hierarchy": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Missing Hierarchy",
+            "default": []
+          },
+          "fachgebiete": {
+            "items": {
+              "$ref": "#/components/schemas/TagSuggestionItem"
+            },
+            "type": "array",
+            "title": "Fachgebiete",
+            "default": []
+          },
+          "has_actionable_suggestions": {
+            "type": "boolean",
+            "title": "Has Actionable Suggestions",
+            "default": false
+          }
+        },
+        "type": "object",
+        "title": "EntryTagSuggestionsResponse",
+        "description": "Folder-path tag suggestions for an entry."
+      },
+      "EntryUpdate": {
+        "properties": {
+          "titel": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Titel"
+          },
+          "zusammenfassung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zusammenfassung"
+          },
+          "inhalt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inhalt"
+          },
+          "quelle": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quelle"
+          },
+          "schwierigkeit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Schwierigkeit"
+          },
+          "unterkategorie": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unterkategorie",
+            "description": "Subfolder name (e.g., Notaufnahme, Kardio, Gyn)"
+          },
+          "dokumenttyp": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dokumenttyp"
+          },
+          "source_hierarchy": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Hierarchy"
+          },
+          "fachgebiet_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fachgebiet Ids"
+          },
+          "diagnose_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Diagnose Ids"
+          },
+          "symptom_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Symptom Ids"
+          },
+          "ordner_label_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ordner Label Ids"
+          },
+          "dokumenttyp_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dokumenttyp Id"
+          }
+        },
+        "type": "object",
+        "title": "EntryUpdate",
+        "description": "Model for updating an existing knowledge entry."
+      },
+      "FachStats": {
+        "properties": {
+          "fachgebiet_id": {
+            "type": "integer",
+            "title": "Fachgebiet Id"
+          },
+          "fachgebiet_name": {
+            "type": "string",
+            "title": "Fachgebiet Name"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "fachgebiet_id",
+          "fachgebiet_name",
+          "count"
+        ],
+        "title": "FachStats",
+        "description": "Statistics per Fachgebiet."
+      },
+      "FachgebietCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "beschreibung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Beschreibung"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "FachgebietCreate",
+        "description": "Schema for creating a Fachgebiet."
+      },
+      "FachgebietUpdate": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "beschreibung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Beschreibung"
+          }
+        },
+        "type": "object",
+        "title": "FachgebietUpdate",
+        "description": "Schema for updating a Fachgebiet."
+      },
+      "FileInfoResponse": {
+        "properties": {
+          "exists": {
+            "type": "boolean",
+            "title": "Exists"
+          },
+          "mime_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mime Type"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Size"
+          },
+          "can_inline": {
+            "type": "boolean",
+            "title": "Can Inline"
+          }
+        },
+        "type": "object",
+        "required": [
+          "exists",
+          "can_inline"
+        ],
+        "title": "FileInfoResponse",
+        "description": "Response model for file info endpoint."
+      },
+      "FilterOption": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "FilterOption",
+        "description": "A filter option (id + display name + matching entry count)."
+      },
+      "FolderOption": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "count"
+        ],
+        "title": "FolderOption",
+        "description": "A top-level source folder segment with its entry count."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "KnowledgeEntrySummary": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "titel": {
+            "type": "string",
+            "title": "Titel"
+          },
+          "zusammenfassung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zusammenfassung",
+            "default": [
+              null
+            ]
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "dokumenttyp": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dokumenttyp"
+          },
+          "schwierigkeit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Schwierigkeit"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "titel",
+          "status"
+        ],
+        "title": "KnowledgeEntrySummary",
+        "description": "Summary schema for KnowledgeEntry (used in list responses)."
+      },
+      "Link": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "label",
+          "url"
+        ],
+        "title": "Link"
+      },
+      "OrdnerLabelCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "OrdnerLabelCreate",
+        "description": "Schema for creating an OrdnerLabel."
+      },
+      "OrdnerLabelResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "needs_review": {
+            "type": "boolean",
+            "title": "Needs Review",
+            "default": false
+          },
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "default": "seed"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "OrdnerLabelResponse",
+        "description": "Response model for a folder label."
+      },
+      "OrdnerLabelUpdate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "OrdnerLabelUpdate",
+        "description": "Schema for renaming an OrdnerLabel."
+      },
+      "PendingReviewItem": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "default": "llm"
+          },
+          "beschreibung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Beschreibung"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind",
+          "id",
+          "name"
+        ],
+        "title": "PendingReviewItem",
+        "description": "Classification lookup awaiting admin review."
+      },
+      "PendingReviewResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PendingReviewItem"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total"
+        ],
+        "title": "PendingReviewResponse",
+        "description": "All classification lookups pending review."
+      },
+      "PipelineResult": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "description": "Whether processing succeeded"
+          },
+          "file_type": {
+            "type": "string",
+            "title": "File Type",
+            "description": "Detected file type (image, audio, text)"
+          },
+          "extracted_text": {
+            "type": "string",
+            "title": "Extracted Text",
+            "description": "Extracted text content",
+            "default": ""
+          },
+          "processing_time_ms": {
+            "type": "number",
+            "title": "Processing Time Ms",
+            "description": "Processing time in milliseconds"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "file_type",
+          "processing_time_ms"
+        ],
+        "title": "PipelineResult",
+        "description": "Response model for pipeline file processing."
+      },
+      "PubmedResult": {
+        "properties": {
+          "pmid": {
+            "type": "string",
+            "title": "Pmid"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "authors": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Authors"
+          },
+          "journal": {
+            "type": "string",
+            "title": "Journal"
+          },
+          "date": {
+            "type": "string",
+            "title": "Date"
+          },
+          "doi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Doi"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "abstract": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abstract"
+          }
+        },
+        "type": "object",
+        "required": [
+          "pmid",
+          "title",
+          "authors",
+          "journal",
+          "date",
+          "url"
+        ],
+        "title": "PubmedResult"
+      },
+      "PubmedSearchResponse": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/PubmedResult"
+            },
+            "type": "array",
+            "title": "Results"
+          },
+          "query": {
+            "type": "string",
+            "title": "Query"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "results",
+          "query"
+        ],
+        "title": "PubmedSearchResponse"
+      },
+      "RagResponse": {
+        "properties": {
+          "answer": {
+            "type": "string",
+            "title": "Answer"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/RagSourceItem"
+            },
+            "type": "array",
+            "title": "Sources"
+          },
+          "query": {
+            "type": "string",
+            "title": "Query"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          }
+        },
+        "type": "object",
+        "required": [
+          "answer",
+          "sources",
+          "query",
+          "model"
+        ],
+        "title": "RagResponse",
+        "description": "Response model for RAG over AWMF chunks."
+      },
+      "RagSourceItem": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "source_path": {
+            "type": "string",
+            "title": "Source Path"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "awmf": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Awmf"
+          },
+          "society": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Society"
+          },
+          "page": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page"
+          },
+          "score": {
+            "type": "number",
+            "title": "Score"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "source_path",
+          "title",
+          "score"
+        ],
+        "title": "RagSourceItem",
+        "description": "A retrieved passage cited by a RAG answer (no raw text \u2014 too large)."
+      },
+      "RecentEntry": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "titel": {
+            "type": "string",
+            "title": "Titel"
+          },
+          "zusammenfassung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zusammenfassung"
+          },
+          "dokumenttyp": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dokumenttyp"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "fachgebiete": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Fachgebiete"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "titel",
+          "zusammenfassung",
+          "dokumenttyp",
+          "created_at",
+          "fachgebiete"
+        ],
+        "title": "RecentEntry",
+        "description": "Recent entry for activity list."
+      },
+      "ResolveLabelsRequest": {
+        "properties": {
+          "fachgebiete": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Fachgebiete",
+            "default": []
+          },
+          "diagnosen": {
+            "items": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Diagnosen",
+            "default": []
+          },
+          "symptome": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Symptome",
+            "default": []
+          },
+          "dokumenttyp": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dokumenttyp"
+          },
+          "ordner_labels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Ordner Labels",
+            "default": []
+          }
+        },
+        "type": "object",
+        "title": "ResolveLabelsRequest",
+        "description": "Resolve string labels to lookup IDs (creates missing rows)."
+      },
+      "ResolveLabelsResponse": {
+        "properties": {
+          "fachgebiet_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Fachgebiet Ids",
+            "default": []
+          },
+          "diagnose_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Diagnose Ids",
+            "default": []
+          },
+          "symptom_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Symptom Ids",
+            "default": []
+          },
+          "needs_review_count": {
+            "type": "integer",
+            "title": "Needs Review Count",
+            "default": 0
+          },
+          "dokumenttyp_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dokumenttyp Id"
+          },
+          "ordner_label_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Ordner Label Ids",
+            "default": []
+          }
+        },
+        "type": "object",
+        "title": "ResolveLabelsResponse",
+        "description": "Resolved lookup IDs from string labels."
+      },
+      "SearchFilterOptions": {
+        "properties": {
+          "fachgebiete": {
+            "items": {
+              "$ref": "#/components/schemas/FilterOption"
+            },
+            "type": "array",
+            "title": "Fachgebiete",
+            "default": []
+          },
+          "diagnosen": {
+            "items": {
+              "$ref": "#/components/schemas/FilterOption"
+            },
+            "type": "array",
+            "title": "Diagnosen",
+            "default": []
+          },
+          "symptome": {
+            "items": {
+              "$ref": "#/components/schemas/FilterOption"
+            },
+            "type": "array",
+            "title": "Symptome",
+            "default": []
+          },
+          "dokumenttypen": {
+            "items": {
+              "$ref": "#/components/schemas/FilterOption"
+            },
+            "type": "array",
+            "title": "Dokumenttypen",
+            "default": []
+          },
+          "ordner_labels": {
+            "items": {
+              "$ref": "#/components/schemas/FilterOption"
+            },
+            "type": "array",
+            "title": "Ordner Labels",
+            "default": []
+          },
+          "folders": {
+            "items": {
+              "$ref": "#/components/schemas/FolderOption"
+            },
+            "type": "array",
+            "title": "Folders",
+            "default": []
+          }
+        },
+        "type": "object",
+        "title": "SearchFilterOptions",
+        "description": "Available filter options for the search page facet sidebar."
+      },
+      "SearchResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SearchResultItem"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "query": {
+            "type": "string",
+            "title": "Query"
+          },
+          "filters": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SearchFilterOptions"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset",
+          "query"
+        ],
+        "title": "SearchResponse",
+        "description": "Response model for search queries."
+      },
+      "SearchResultItem": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "titel": {
+            "type": "string",
+            "title": "Titel"
+          },
+          "zusammenfassung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zusammenfassung"
+          },
+          "inhalt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inhalt"
+          },
+          "dokumenttyp": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dokumenttyp"
+          },
+          "schwierigkeit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Schwierigkeit"
+          },
+          "unterkategorie": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unterkategorie",
+            "description": "Subfolder name (e.g., Notaufnahme, Kardio, Gyn)"
+          },
+          "source_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Path"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "rank": {
+            "type": "number",
+            "title": "Rank"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "titel",
+          "rank"
+        ],
+        "title": "SearchResultItem",
+        "description": "Single search result with relevance information."
+      },
+      "Section": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "sub": {
+            "items": {
+              "$ref": "#/components/schemas/SubSection"
+            },
+            "type": "array",
+            "title": "Sub"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "sub"
+        ],
+        "title": "Section"
+      },
+      "SourceInfo": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "display_name": {
+            "type": "string",
+            "title": "Display Name"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "file_types": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "File Types"
+          },
+          "default_fachgebiete": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Default Fachgebiete"
+          },
+          "subcategories": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Subcategories"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "display_name",
+          "category",
+          "description",
+          "file_types",
+          "default_fachgebiete",
+          "subcategories"
+        ],
+        "title": "SourceInfo"
+      },
+      "StatsOverview": {
+        "properties": {
+          "total_entries": {
+            "type": "integer",
+            "title": "Total Entries"
+          },
+          "entries_by_category": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Entries By Category"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_entries",
+          "entries_by_category"
+        ],
+        "title": "StatsOverview",
+        "description": "Overview statistics for the dashboard."
+      },
+      "SubSection": {
+        "properties": {
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "links": {
+            "items": {
+              "$ref": "#/components/schemas/Link"
+            },
+            "type": "array",
+            "title": "Links"
+          }
+        },
+        "type": "object",
+        "required": [
+          "links"
+        ],
+        "title": "SubSection"
+      },
+      "SummarizeRequest": {
+        "properties": {
+          "skill": {
+            "type": "string",
+            "enum": [
+              "studie",
+              "leitlinie",
+              "screenshot",
+              "standard"
+            ],
+            "title": "Skill",
+            "description": "Type of content to process"
+          },
+          "provider": {
+            "type": "string",
+            "title": "Provider",
+            "description": "AI provider to use",
+            "default": "llamaserver"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model",
+            "description": "Specific model to use (provider-dependent)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill"
+        ],
+        "title": "SummarizeRequest",
+        "description": "Request model for text extraction and summarization."
+      },
+      "SummarizeResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "description": "Whether processing succeeded"
+          },
+          "extracted_text": {
+            "type": "string",
+            "title": "Extracted Text",
+            "description": "Extracted text content",
+            "default": ""
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary",
+            "description": "Generated summary",
+            "default": ""
+          },
+          "model_used": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Used",
+            "description": "Model used for processing"
+          },
+          "skill_used": {
+            "type": "string",
+            "title": "Skill Used",
+            "description": "Skill type used for processing"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "skill_used"
+        ],
+        "title": "SummarizeResponse",
+        "description": "Response model for text extraction and summarization."
+      },
+      "SymptomCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "beschreibung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Beschreibung"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "SymptomCreate",
+        "description": "Schema for creating a Symptom."
+      },
+      "SymptomUpdate": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "beschreibung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Beschreibung"
+          }
+        },
+        "type": "object",
+        "title": "SymptomUpdate",
+        "description": "Schema for updating a Symptom."
+      },
+      "SyncStatusResponse": {
+        "properties": {
+          "total_files": {
+            "type": "integer",
+            "title": "Total Files"
+          },
+          "files_waiting": {
+            "type": "integer",
+            "title": "Files Waiting"
+          },
+          "last_change": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Change"
+          },
+          "last_sync": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Sync"
+          },
+          "running": {
+            "type": "boolean",
+            "title": "Running",
+            "default": false
+          },
+          "imported": {
+            "type": "integer",
+            "title": "Imported",
+            "default": 0
+          },
+          "updated": {
+            "type": "integer",
+            "title": "Updated",
+            "default": 0
+          },
+          "deleted": {
+            "type": "integer",
+            "title": "Deleted",
+            "default": 0
+          },
+          "sync_errors": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Sync Errors"
+          },
+          "source_folders": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Source Folders"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_files",
+          "files_waiting",
+          "sync_errors",
+          "source_folders"
+        ],
+        "title": "SyncStatusResponse",
+        "description": "Response model for sync status (cheap \u2014 no filesystem hashing)."
+      },
+      "SyncTriggerResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "changes_detected": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Changes Detected"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "message",
+          "changes_detected"
+        ],
+        "title": "SyncTriggerResponse",
+        "description": "Response model for manual sync trigger."
+      },
+      "TagSuggestionItem": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          },
+          "already_linked": {
+            "type": "boolean",
+            "title": "Already Linked",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "label"
+        ],
+        "title": "TagSuggestionItem",
+        "description": "A single folder-derived Fachgebiet suggestion."
+      },
+      "TranscribeRequest": {
+        "properties": {
+          "backend": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Backend",
+            "description": "OCR backend to use: tesseract, openrouter-vision. None = run the configured OCR_BACKENDS seam in order (auto)."
+          }
+        },
+        "type": "object",
+        "title": "TranscribeRequest",
+        "description": "Request model for pure OCR transcription (no LLM)."
+      },
+      "TranscribeResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "description": "Whether processing succeeded"
+          },
+          "extracted_text": {
+            "type": "string",
+            "title": "Extracted Text",
+            "description": "Extracted raw text content",
+            "default": ""
+          },
+          "file_type": {
+            "type": "string",
+            "title": "File Type",
+            "description": "Detected file type (image, audio, text)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "file_type"
+        ],
+        "title": "TranscribeResponse",
+        "description": "Response model for pure OCR transcription (no LLM)."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "api__models__DiagnoseResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "beschreibung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Beschreibung"
+          },
+          "needs_review": {
+            "type": "boolean",
+            "title": "Needs Review",
+            "default": false
+          },
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "default": "seed"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "name"
+        ],
+        "title": "DiagnoseResponse",
+        "description": "Response model for a diagnosis."
+      },
+      "api__models__FachgebietResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "beschreibung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Beschreibung"
+          },
+          "needs_review": {
+            "type": "boolean",
+            "title": "Needs Review",
+            "default": false
+          },
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "default": "seed"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "FachgebietResponse",
+        "description": "Response model for a specialty/field."
+      },
+      "api__models__SymptomResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "beschreibung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Beschreibung"
+          },
+          "needs_review": {
+            "type": "boolean",
+            "title": "Needs Review",
+            "default": false
+          },
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "default": "seed"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "SymptomResponse",
+        "description": "Response model for a symptom."
+      },
+      "api__routers__classifications__DiagnoseResponse": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "beschreibung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Beschreibung"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "name",
+          "id"
+        ],
+        "title": "DiagnoseResponse",
+        "description": "Response schema for Diagnose."
+      },
+      "api__routers__classifications__FachgebietResponse": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "beschreibung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Beschreibung"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "id"
+        ],
+        "title": "FachgebietResponse",
+        "description": "Response schema for Fachgebiet."
+      },
+      "api__routers__classifications__SymptomResponse": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "beschreibung": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Beschreibung"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "id"
+        ],
+        "title": "SymptomResponse",
+        "description": "Response schema for Symptom."
+      }
+    }
+  }
+}

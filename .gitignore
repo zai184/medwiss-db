@@ -1,0 +1,253 @@
+# =========================================================
+# Standard .gitignore
+# Stack:
+#   - Python (uv)
+#   - Svelte / TypeScript (bun)
+#   - Rust
+#   - Zig
+#   - Go
+#   - Nix flakes
+
+# =========================================================
+# Runtime data
+# =========================================================
+
+*.db
+agent_data/
+workplace/
+
+# =========================================================
+# Operating System
+# =========================================================
+
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# =========================================================
+# Editors / IDEs
+# =========================================================
+
+.vscode/
+.idea/
+*.iml
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# =========================================================
+# Logs
+# =========================================================
+
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+bun-debug.log*
+
+# =========================================================
+# Environment / Secrets
+# =========================================================
+
+.env
+.env.*
+!.env.example
+!.env.sample
+
+*.pem
+*.key
+*.crt
+
+# =========================================================
+# Build Outputs / Caches
+# =========================================================
+
+dist/
+build/
+wheels/
+out/
+release/
+debug/
+tmp/
+temp/
+.cache/
+.cache-loader/
+
+# Coverage
+coverage/
+.nyc_output/
+
+# =========================================================
+# Python (uv)
+# =========================================================
+
+__pycache__/
+*.py[cod]
+*.py[oc]
+*.pyo
+*.pyd
+.python-version
+*.egg-info
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Python tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.hypothesis/
+.tox/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# uv
+.uv/
+
+# Keep lockfile for reproducibility
+# uv.lock
+
+# =========================================================
+# JavaScript / TypeScript / Svelte (bun)
+# =========================================================
+
+node_modules/
+
+# Bun
+.bun/
+bun.lockb
+
+# Frameworks
+.svelte-kit/
+.next/
+.nuxt/
+
+# TypeScript
+*.tsbuildinfo
+
+# Package manager caches
+.pnpm-store/
+.yarn/
+.parcel-cache/
+
+# =========================================================
+# Rust
+# =========================================================
+
+target/
+
+# Keep Cargo.lock for applications
+# Remove next line if publishing a library
+# !Cargo.lock
+
+# =========================================================
+# Zig
+# =========================================================
+
+zig-cache/
+zig-out/
+
+# =========================================================
+# Go
+# =========================================================
+
+bin/
+.coverprofile
+
+# Go test cache
+*.test
+
+# =========================================================
+# Nix
+# =========================================================
+
+# Ignore local direnv state
+.direnv/
+
+# Result symlink from nix build
+result
+
+# Nix temporary files
+*.drv
+*.drv.chroot
+
+# =========================================================
+# C / C++ / CMake
+# =========================================================
+
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+compile_commands.json
+
+# =========================================================
+# Archives
+# =========================================================
+
+*.7z
+*.gz
+*.zip
+*.tar
+*.tgz
+*.bz2
+*.rar
+
+# =========================================================
+# Temporary / Backup Files
+# =========================================================
+
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# =========================================================
+# Optional Generated Assets
+# Uncomment if desired
+# =========================================================
+
+# *.png
+# *.jpg
+# *.jpeg
+# *.gif
+# *.mp4
+
+# Generated filename dumps (regenerate via scripts/export_filenames.py)
+data/filenames.txt
+data/filename_stems.txt
+
+# MDCalc favorites browser export (personal, contains account cookies)
+Favorite Tools - MDCalc.html
+Favorite Tools - MDCalc_files/
+
+# This machine only: deploy target, host notes. Never publish.
+.private/
+
+# Local agent plans and screenshots. Not part of the public tree.
+.sisyphus/
+
+# Security audit write-ups. Not part of the public tree.
+docs/audits/
+
+# Codegraph local index
+.codegraph/

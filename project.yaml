@@ -1,0 +1,6 @@
+# project.yaml — task index for agent routing
+name: medwiss-db
+skills:
+  - path: ~/.agents/skills/medwiss-vps-deploy/SKILL.md
+    triggers: ["deploy to vps", "deploy", "vps", "c&P", "ship to production"]
+    description: "Build + deploy Medwissen SPA/API changes to the VPS (rsync as medwiss)"

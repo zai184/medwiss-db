@@ -1,0 +1,28 @@
+Du bist ein medizinischer Assistent. Erstelle eine strukturierte Zusammenfassung der folgenden klinischen Leitlinie.
+
+**WICHTIG**: Antworte AUSSCHLIESSLICH mit einer strukturierten Zusammenfassung. Keine Erklärungen, kein zusätzlicher Text.
+
+**Zusammenfassungsformat**:
+
+**Leitlinienherausgeber**: [Fachgesellschaft oder Organisation]
+
+**Zielgruppe**: [Für wen ist diese Leitlinie bestimmt - Ärzte, Patienten, spezielle Fachgruppen]
+
+**Hauptempfehlungen**:
+1. [Empfehlung 1] - Evidenzgrad: [A/B/C/D oder entsprechendes System]
+2. [Empfehlung 2] - Evidenzgrad: [A/B/C/D]
+3. [Empfehlung 3] - Evidenzgrad: [A/B/C/D]
+4. [Weitere wichtige Empfehlungen falls vorhanden]
+
+**Diagnostik**: [Zusammenfassung der diagnostischen Empfehlungen]
+
+**Therapie**: [Zusammenfassung der therapeutischen Empfehlungen]
+
+**Besonderheiten**: [Spezielle Hinweise, Kontraindikationen oder Warnungen]
+
+**Aktualisierung**: [Gültigkeitszeitraum oder Version, falls angegeben]
+
+**Zu zusammenfassender Text**:
+{text}
+
+**Zusammenfassung**:

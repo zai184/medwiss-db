@@ -1,0 +1,175 @@
+# Source Folders Configuration for Batch Import
+# Maps source folders to categories, default fachgebiete, and processing options
+
+# All paths are relative to MEDWISS_CONTENT_ROOT (default ~/Dokumente/Medizin;
+# VPS: /srv/medwiss/Dokumente/Medizin → /srv/medwiss/corpus).
+# The content root is the single source of truth — read-only to the app.
+
+sources:
+  # 1. SOPs - Standard Operating Procedures
+  - name: "1_SOPs"
+    path: "1_SOPs"
+    category: "sop"
+    description: "Standard Operating Procedures and clinical protocols"
+    default_fachgebiete:
+      - "Allgemeinmedizin"
+      - "Notfallmedizin"
+    auto_classify: true
+    file_types:
+      - ".pdf"
+      - ".jpg"
+      - ".png"
+      - ".md"
+
+  # 2. Notfall - Emergency Medicine
+  - name: "2_Notfall"
+    path: "2_Notfall"
+    category: "notfall"
+    description: "Emergency medicine protocols and references"
+    default_fachgebiete:
+      - "Notfallmedizin"
+    auto_classify: true
+    file_types:
+      - ".pdf"
+      - ".md"
+
+  # 3. Leitlinien - Clinical Guidelines
+  - name: "3_Leitlinien"
+    path: "3_Leitlinien"
+    category: "leitlinien"
+    description: "Evidence-based clinical guidelines and recommendations"
+    default_fachgebiete:
+      - "Allgemeinmedizin"
+    auto_classify: true
+    file_types:
+      - ".pdf"
+      - ".md"
+
+  # 4. Red Flags - Clinical Warning Signs
+  - name: "4_Red_Flags"
+    path: "4_Red_Flags"
+    category: "red_flags"
+    description: "Clinical red flags and warning signs for serious conditions"
+    default_fachgebiete:
+      - "Allgemeinmedizin"
+      - "Notfallmedizin"
+      - "Diagnostik"
+    auto_classify: true
+    file_types:
+      - ".pdf"
+      - ".jpg"
+      - ".png"
+      - ".md"
+
+  # 5. Fächer - Medical Specialties/Subspecialties
+  - name: "5_Fächer"
+    path: "5_Fächer"
+    category: "faecher"
+    description: "Medical specialties and subject-specific content"
+    default_fachgebiete: []
+    auto_classify: true
+    file_types:
+      - ".pdf"
+      - ".jpg"
+      - ".png"
+      - ".md"
+
+  # 6. Pharmakologie - Pharmaceutical Information
+  - name: "6_Pharmakologie"
+    path: "6_Pharmakologie"
+    category: "pharma"
+    description: "Drug information, interactions, and pharmaceutical guidelines"
+    default_fachgebiete:
+      - "Pharmakologie"
+      - "Allgemeinmedizin"
+    auto_classify: true
+    file_types:
+      - ".pdf"
+      - ".md"
+
+  # 7. Fragebögen - Medical Questionnaires
+  - name: "7_Fragebögen"
+    path: "7_Fragebögen"
+    category: "frageboegen"
+    description: "Validated medical questionnaires and assessment tools"
+    default_fachgebiete:
+      - "Allgemeinmedizin"
+      - "Psychiatrie"
+      - "Diagnostik"
+    auto_classify: true
+    file_types:
+      - ".pdf"
+      - ".docx"
+      - ".md"
+
+  # 8. Infoblätter - Patient Information Sheets
+  - name: "8_Infoblätter"
+    path: "8_Infoblätter"
+    category: "infoblaetter"
+    description: "Patient education materials and information sheets"
+    default_fachgebiete:
+      - "Allgemeinmedizin"
+      - "Patienteninformation"
+    auto_classify: true
+    file_types:
+      - ".pdf"
+      - ".jpg"
+      - ".png"
+      - ".md"
+
+  # 9. Prüfungen - Medical examinations and test materials
+  - name: "9_Prüfungen"
+    path: "9_Prüfungen"
+    category: "pruefungen"
+    description: "Medical examinations and test materials"
+    default_fachgebiete:
+      - "Allgemeinmedizin"
+    auto_classify: true
+    file_types:
+      - ".pdf"
+      - ".md"
+
+  # 10. Fortbildung - Continuing Medical Education (aggregates 2024, 2025, 2026)
+  - name: "Fortbildung"
+    path: "Fortbildung 2024"
+    category: "fortbildung"
+    description: "Continuing medical education materials (2024)"
+    additional_paths:
+      - "Fortbildung 2025"
+      - "Fortbildung 2026"
+    default_fachgebiete:
+      - "Allgemeinmedizin"
+      - "Fortbildung"
+    auto_classify: true
+    file_types:
+      - ".pdf"
+      - ".mp3"
+      - ".wav"
+      - ".m4a"
+      - ".jpg"
+      - ".png"
+      - ".md"
+
+  # 11. Fortbildungen - Continuing education platform materials
+  - name: "Fortbildungen"
+    path: "Fortbildungen"
+    category: "fortbildung"
+    description: "Continuing education from platforms (Amboss, Cases+Clues, FOMF, GiDi, Medbee, Podcasts)"
+    default_fachgebiete:
+      - "Allgemeinmedizin"
+      - "Fortbildung"
+    auto_classify: true
+    file_types:
+      - ".pdf"
+      - ".mp3"
+      - ".wav"
+      - ".m4a"
+      - ".jpg"
+      - ".png"
+      - ".md"
+
+# Environment variable overrides
+# These take precedence over the above values when set
+env_overrides:
+  content_root: "MEDWISS_CONTENT_ROOT"
+  workspace_root: "WORKSPACE_ROOT"

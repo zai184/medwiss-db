@@ -1,0 +1,182 @@
+# MedWiss Klassifikations-Bibliothek (Regex)
+# -----------------------------------------
+# Deterministische Klassifikation: KEIN LLM. Reiner Regex-Abgleich auf
+# Ordnerpfad + Dateiname.
+#
+# Format pro Zeile:  <Typ>|<Schlüsselwort>|<Anzeigename>[|<ICD-10>]
+#
+# Typen:
+#   F  = Fachgebiet   (Abgleich: Ordnerpfad)
+#   D  = Diagnose     (Abgleich: Dateiname)
+#   S  = Symptom      (Abgleich: Dateiname)
+#
+# Das Schlüsselwort wird case-insensitive als Teilstring im Ziel
+# (Ordnerpfad für F, Dateiname für D/S) gesucht.
+#
+# Zeilen mit # sind Kommentare. Leere Zeilen ignoriert.
+#
+# Beispiel:
+#   F|Kardiologie|Kardiologie
+#   D|VHF|Vorhofflimmern|I48
+#   S|Kopfschmerz|Kopfschmerz
+
+# ============================================================
+# FACHGEBIETE (aus Ordnerpfad abgeleitet)
+# 5_Fächer/<Unterordner> → Fachgebiet = Unterordner
+# ============================================================
+F|Kardiologie|Kardiologie
+F|Tropenmedizin|Tropenmedizin
+F|Psychosomatik|Psychosomatik
+F|Psychiatrie|Psychiatrie
+F|Pulmologie|Pulmologie
+F|Infektiologie|Infektiologie
+F|Umweltmedizin|Umweltmedizin
+F|Impfungen|Impfwesen
+F|Diabetologie|Diabetologie
+F|Gastrologie|Gastroenterologie
+F|Nephrologie|Nephrologie
+F|Neurologie|Neurologie
+F|Gynäkologie|Gynäkologie
+F|Urologie|Urologie
+F|Zahnheilkunde|Zahnheilkunde
+F|Ernährung|Ernährung
+F|Prävention|Prävention
+F|Pharmakologie|Pharmakologie
+F|Notaufnahme|Notfallmedizin
+F|Notfall|Notfallmedizin
+F|SOPs Notaufnahme|Notfallmedizin
+F|KOR|Kardiologie
+F|Gastro|Gastroenterologie
+F|Onko|Onkologie
+F|Pädiatrie|Pädiatrie
+F|Kinder|Pädiatrie
+F|Geriatrie|Geriatrie
+F|Orthopädie|Orthopädie
+F|Ophthalmologie|Ophthalmologie
+F|HNO|HNO-Heilkunde
+F|Dermatologie|Dermatologie
+F|Radiologie|Radiologie
+F|Anästhesie|Anästhesiologie
+
+# ============================================================
+# DIAGNOSEN (aus Dateiname abgeleitet)
+# ============================================================
+# --- Entzündungen (-itis) ---
+D|Pankreatitis|Akute Pankreatitis|K85
+D|Appendizitis|Appendizitis|K35
+D|Divertikulitis|Divertikulitis|K57
+D|Colitis ulcerosa|Colitis ulcerosa|K51
+D|Urethritis|Urethritis|N34
+D|Zystitis|Harnwegsinfektion|N30
+D|Pneumonie|Pneumonie|J18
+D|Meningitis|Meningitis|G03
+D|Endokarditis|Endokarditis|I33
+D|Myokarditis|Myokarditis|I40
+D|Hepatitis|Hepatitis|K75
+D|Otitis|Otitis media|H66
+D|Pharyngitis|Pharyngitis|J02
+D|Tonsillitis|Tonsillitis|J03
+D|Sinusitis|Sinusitis|J32
+D|Dermatitis|Dermatitis|L30
+D|Neurodermitis|Neurodermitis|L20
+D|Enzephalitis|Enzephalitis|G04
+D|Peritonitis|Peritonitis|K65
+
+# --- Degenerative/systemische (-ose, -om) ---
+D|Fibromyalgie|Fibromyalgie-Syndrom|M79
+D|Gonarthrose|Gonarthrose|M17
+D|Arthrose|Arthrose|M19
+D|Osteoporose|Osteoporose|M81
+D|Mukoviszidose|Mukoviszidose|E84
+D|Dysphagie|Dysphagie|R13
+D|Osteomyelitis|Osteomyelitis|M86
+D|Neuroborreliose|Neuroborreliose|A69
+D|Sklerose|Multiple Sklerose|G35
+
+# --- Tumore ---
+D|Karzinom|Karzinom|C80
+D|Melanom|Melanom|C43
+D|Gliom|Gliom|C71
+D|Lymphom|Lymphom|C85
+D|Tumor|Tumor|C80
+D|Rhabdomyosarkom|Rhabdomyosarkom|C49
+D|Neuroblastom|Neuroblastom|C74
+D|Vulvakarzinom|Vulvakarzinom|C51
+D|Vaginalkarzinom|Vaginalkarzinom|C52
+D|Analkarzinom|Analkarzinom|C21
+
+# --- Kardiovaskulär/neurologisch ---
+D|Schlaganfall|Schlaganfall|I63
+D|Insult|Zerebraler Insult|I63
+D|Infarkt|Herzinfarkt|I21
+D|Herzinsuffizienz|Herzinsuffizienz|I50
+D|Vorhofflimmern|Vorhofflimmern|I48
+D|VHF|Vorhofflimmern|I48
+D|Hypertonie|Hypertonie|I10
+D|COPD|COPD|J44
+D|Asthma|Asthma bronchiale|J45
+D|Sepsis|Sepsis|A41
+D|Gicht|Gicht|M10
+
+# --- Stoffwechsel/Infektiologie ---
+D|Diabetes|Diabetes mellitus|E11
+D|Hyperglyk|Hyperglykämie|E73
+D|Tuberkulose|Tuberkulose|A15
+D|Malaria|Malaria|B54
+D|HIV|HIV-Infektion|B24
+D|COVID|COVID-19|U07
+D|Influenza|Influenza|J10
+
+# --- Psychiatrie/neurologisch ---
+D|Epilepsie|Epilepsie|G40
+D|Schizophrenie|Schizophrenie|F20
+D|Depression|Depression|F32
+D|Angststörung|Angststörung|F41
+D|Demenz|Demenz|F03
+D|Parkinson|Parkinson|G20
+D|Migräne|Migräne|G43
+D|Neuropathie|Neuropathie|G62
+
+# --- Syndrome ---
+D|Syndrom|Syndrom|R68
+D|PCOS|Polyzystisches Ovarsyndrom|E28
+D|Karpaltunnel|Karpaltunnel-Syndrom|G56
+D|Kubitaltunnel|Kubitaltunnel-Syndrom|G56
+D|Reizdarm|Reizdarmsyndrom|K58
+D|Leberzirrhose|Leberzirrhose|K74
+D|Pankreas|Pankreaserkrankung|K86
+
+# --- Verletzungen/akut ---
+D|Verbrennung|Verbrennung|T30
+D|Vergiftung|Vergiftung|T65
+D|Intoxikation|Vergiftung|T65
+D|Trauma|Trauma|T14
+D|Fraktur|Fraktur|T14
+D|Blutung|Blutung|R58
+D|Schock|Schock|R57
+D|Anaphylaxie|Anaphylaxie|T78
+D|Allergie|Allergie|T78
+D|Bienengift|Bienengiftallergie|T63
+D|Wespengift|Wespengiftallergie|T63
+D|Synkope|Synkope|R55
+
+# ============================================================
+# SYMPTOME (aus Dateiname abgeleitet)
+# ============================================================
+S|Kopfschmerz|Kopfschmerz
+S|Rückenschmerz|Rückenschmerz
+S|Bauchschmerz|Bauchschmerz
+S|Thoraxschmerz|Thoraxschmerz
+S|Halsschmerzen|Halsschmerzen
+S|Erbrechen|Erbrechen
+S|Schwindel|Schwindel
+S|Synkope|Synkope
+S|Fieber|Fieber
+S|Bewusstseinsverlust|Bewusstseinsverlust
+S|Suizidalität|Suizidalität
+S|Schmerz|Schmerz
+S|Übelkeit|Übelkeit
+S|Dyspnoe|Dyspnoe
+S|Husten|Husten
+S|Blutdruck|Blutdruck
+S|Palpitationen|Palpitationen
