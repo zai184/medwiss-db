@@ -1,3 +1,16 @@
+## [Unreleased] - 2026-10-20 11-40
+### Changed
+- **Published to GitHub** (`github.com/zai184/medwiss-db`, AGPL-3.0, public).
+  Public `main` is a fresh single-commit squash of the former 96-commit
+  history: that history contained VPS username/WireGuard IP/SSH port and the
+  2026-09-24 audit report (all scrubbed from the tree on 2026-10-15, but
+  alive in old commits). Topology since then: local `main` = public history →
+  `origin` (GitHub); branch `archive` = full old history → `backup` (NAS).
+  Old semver tags exist only on `archive`/NAS — never push them to GitHub.
+  `.codegraph/` untracked + gitignored.
+
+LOC added: 10 | LOC removed: 0 | LOC total: ~98,360
+
 ## [Unreleased] - 2026-10-15 23-28
 ### Fixed
 - **`scripts/deploy-vps.sh` copies `uv.lock` and runs `uv sync --frozen`**

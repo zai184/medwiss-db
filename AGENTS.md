@@ -27,6 +27,12 @@ Writes `contracts/api/openapi.json` + `ui/src/lib/api-types.d.ts`. Do not edit t
 at `GET /api/v1/version` (reads pyproject at startup).
 
 
+**Git topology (since 2026-10-20 GitHub publish)**: public `main` is a fresh
+single-commit squash → `origin` = `github.com/zai184/medwiss-db`. The former
+96-commit history lives in branch `archive` → `backup` (NAS) — it contains
+old host details and the 2026-09-24 audit report; never push `archive` or the
+old tags to GitHub. `scripts/release.sh` tags on the new history from now on.
+
 ## Overview
 
 The **Medizinische Wissensdatenbank** (Medical Knowledge Database) shows the files in the configured source folders. Those files are the library. PostgreSQL 15 + pgvector is required as the index: `knowledge_entries` is one row per file (path, hash, tags, full-text search), and `chunks` holds AWMF guideline passages for Leitlinien search. A directory listing cannot replace that. Rechner and Notfall are frontend lists and do not use the database. OCR and summarization run on demand.
