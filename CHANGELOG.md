@@ -1,3 +1,13 @@
+## [Unreleased] - 2026-10-21 11-15
+### Fixed
+- **Favicon copyright**: the old `favicon.png` was derived from the copyrighted
+  `oip.jpg` (removed 2026-10-21). Replaced with a clean hand-drawn
+  `ui/static/favicon.svg` (rod + serpent, no third-party source); 64×64 PNG
+  fallback regenerated from the SVG via magick; `app.html` links SVG first,
+  PNG fallback via `alternate icon`.
+
+LOC added: 12 | LOC removed: 2 | LOC total: ~98,420
+
 ## [Unreleased] - 2026-10-20 12-10
 ### Added
 - **Pre-push guard** (`.private/githooks/pre-push`, wired via
