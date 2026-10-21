@@ -6,16 +6,18 @@
 	import { groupEntries, NOTFALL_GROUPS, type EntryGroup } from '$lib/notfallGroups';
 
 	// Tabs are path-filtered views over the corpus ("files are the database"):
-	// - Algorithmen & SOPs: everything (md quick-reference + PDF/images) in 2_Notfall/00_Notfall_SOPs
+	// - Algorithmen: the curated .md quick-reference docs in 2_Notfall/00_Notfall_SOPs/md
+	// - SOPs: non-md files (PDF/images) in 2_Notfall/00_Notfall_SOPs
 	// - SOPs Notaufnahme: the SOP files in 1_SOPs/SOPs Notaufnahme
 	const TABS = [
-		{ id: 'files', label: 'Algorithmen & SOPs', path: '2_Notfall/00_Notfall_SOPs', mdOnly: false },
+		{ id: 'algos', label: 'Algorithmen', path: '2_Notfall/00_Notfall_SOPs/md', mdOnly: true },
+		{ id: 'files', label: 'SOPs', path: '2_Notfall/00_Notfall_SOPs', mdOnly: false },
 		{ id: 'sops', label: 'SOPs Notaufnahme', path: '1_SOPs/SOPs Notaufnahme', mdOnly: false },
 	] as const;
 
 	type TabId = (typeof TABS)[number]['id'];
 
-	let active = $state<TabId>('files');
+	let active = $state<TabId>('algos');
 	let entries = $state<Record<string, EntryResponse[]>>({});
 	let loading = $state(true);
 	let activeId = $state<number | null>(null);

@@ -11,8 +11,8 @@ import type { EntryResponse } from '$lib/api';
  * New corpus files that hit no rule still surface under the tab's fallback
  * heading ("Sonstiges" / "Weitere") — nothing is ever silently dropped.
  *
- * Since 2026-10-21 the 'algos' tab is gone: the md quick-reference docs share
- * the 'files' tab and are grouped by the same rules.
+ * 'algos' is intentionally absent: it is only a handful of short reference
+ * cards and stays flat.
  */
 export interface GroupRule {
 	heading: string;
@@ -75,8 +75,6 @@ export const NOTFALL_GROUPS: Record<string, TabGroups> = {
 					'fremdkorper',
 					'abcde',
 					'xabcde',
-					'ample',
-					'anaphylax',
 				],
 			},
 			{

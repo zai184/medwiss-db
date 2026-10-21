@@ -1,3 +1,14 @@
+## [Unreleased] - 2026-10-21 12-50
+### Reverted
+- **Notfall tabs restored** (boss decision after 12-30 merge): "Algorithmen"
+  tab is back, md-only, now pointing at the new subfolder
+  `2_Notfall/00_Notfall_SOPs/md/` (boss moved the md files there on disk).
+  "SOPs" tab back to non-md-only (existing mdOnly filter excludes the md/
+  files automatically). notfallGroups keyword additions reverted; AGENTS.md
+  updated. svelte-check 0 errors.
+
+LOC added: ~8 | LOC removed: ~8 | LOC total: ~98,490
+
 ## [Unreleased] - 2026-10-21 12-30
 ### Changed
 - **Notfall page fully library-sourced**: removed the separate "Algorithmen"
