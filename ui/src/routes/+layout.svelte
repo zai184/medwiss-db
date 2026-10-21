@@ -134,9 +134,24 @@
 	</main>
 </div>
 
+<footer class="site-disclaimer">
+	Nur zu Lern- und Referenzzwecken — keine medizinische Beratung, kein Ersatz für
+	ärztliches Fachpersonal. Im Notfall: 112. Alle Angaben ohne Gewähr.
+	<a href="https://github.com/zai184/medwiss-db">Quellcode (AGPL-3.0)</a>
+</footer>
+
 <EntryViewerOverlay />
 
 <style>
+	.site-disclaimer {
+		max-width: 900px;
+		margin: 0 auto;
+		padding: var(--space-4) var(--space-6);
+		font-size: var(--font-size-xs);
+		color: var(--color-text-secondary);
+		text-align: center;
+	}
+
 	.app {
 		display: flex;
 		min-height: 100vh;

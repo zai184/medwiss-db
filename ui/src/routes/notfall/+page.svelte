@@ -98,6 +98,12 @@
 		<p class="subtitle">Leitlinien: <a href="https://www.erc.edu/science-research/guidelines/" target="_blank" rel="noopener noreferrer">ERC</a> · <a href="https://www.grc-org.de/wissenschaft/leitlinien" target="_blank" rel="noopener noreferrer">GRC</a> · <a href="https://wiederbelebung.at/leitlinien/" target="_blank" rel="noopener noreferrer">ARC</a></p>
 	</header>
 
+	<div class="emergency-warning" role="alert">
+		⚠️ <strong>Lern-Referenz, kein Notfallmanagement.</strong> Algorithmen ersetzen
+		keine aktuelle Kursausbildung (ERC/GRC) und keine ärztliche Entscheidung.
+		Echter medizinischer Notfall: <strong>112</strong> (DE) / <strong>144</strong> (AT).
+	</div>
+
 	<input
 		class="filter-input"
 		type="search"
@@ -214,6 +220,18 @@
 
 	.subtitle a {
 		color: var(--color-primary);
+	}
+
+	.emergency-warning {
+		margin: 0 0 var(--space-4);
+		padding: var(--space-3) var(--space-4);
+		border: 1px solid #dc2626;
+		border-left-width: 4px;
+		border-radius: var(--radius-lg);
+		background: rgba(220, 38, 38, 0.08);
+		color: var(--color-text-primary);
+		font-size: var(--font-size-sm);
+		line-height: 1.5;
 	}
 
 	.filter-input {

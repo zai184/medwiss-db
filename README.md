@@ -181,6 +181,22 @@ Application code is licensed under the GNU Affero General Public License v3.0. S
 
 You may reuse, modify, and share this program. If you distribute a version, or run a modified version over a network, you must release that version's source under the same license. Publishing a closed product from this code is not allowed.
 
-The medical document library is not in this repository and is not covered by this license. This program is not a medical device and not medical advice.
+The medical document library is not in this repository and is not covered by this license. This program is not a medical device (not intended for diagnosis, treatment, or monitoring of patients within the meaning of MDR 2017/745 Art. 2) and not medical advice.
+
+## Medical Disclaimer
+
+This software and everything it displays is provided **for educational and
+reference purposes only**. It is **not medical advice** and **not a substitute**
+for professional judgment, current training, or consultation of the primary
+sources (e.g. AWMF/ERC/GRC guidelines in their current versions).
+
+- Clinical content — including scores, calculators, dosages, and emergency
+  algorithms — can be outdated, wrong, or incomplete. Verify everything against
+  current guidelines before any clinical use.
+- In a real medical emergency, call the emergency services
+  (**112** Germany / **144** Austria), do not use this application.
+- The authors take **no responsibility** and provide **no warranty** of any
+  kind for the accuracy, completeness, or timeliness of the content
+  (see AGPL-3.0 §15).
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).

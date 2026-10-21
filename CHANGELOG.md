@@ -1,3 +1,14 @@
+## [Unreleased] - 2026-10-21 11-45
+### Added
+- **Medical disclaimers** (review request 2026-10-21): README gains a proper
+  "Medical Disclaimer" section (educational-only, verify vs current guidelines,
+  112/144 emergency notice, AGPL §15 no-warranty, MDR 2017/745 Art. 2
+  not-a-device note); global footer line in `+layout.svelte`; red
+  `role="alert"` warning banner on the Notfall page (learning-reference,
+  not emergency management, 112/144). svelte-check: 0 errors.
+
+LOC added: ~60 | LOC removed: 1 | LOC total: ~98,480
+
 ## [Unreleased] - 2026-10-21 11-15
 ### Fixed
 - **Favicon copyright**: the old `favicon.png` was derived from the copyrighted
