@@ -1,3 +1,15 @@
+## [Unreleased] - 2026-10-21 12-30
+### Changed
+- **Notfall page fully library-sourced**: removed the separate "Algorithmen"
+  tab — its md quick-reference files already live in
+  `2_Notfall/00_Notfall_SOPs/` and now share the merged tab
+  "Algorithmen & SOPs" with the PDFs/images (path view, no hard-coded cards).
+  `notfall.ts` was already gone; only keyword grouping remains
+  (`notfallGroups.ts`, +`ample`/`anaphylax` rules). AGENTS.md Notfall section
+  rewritten (was stale, still described notfall.ts cards). svelte-check 0 errors.
+
+LOC added: ~20 | LOC removed: ~10 | LOC total: ~98,490
+
 ## [Unreleased] - 2026-10-21 11-45
 ### Added
 - **Medical disclaimers** (review request 2026-10-21): README gains a proper

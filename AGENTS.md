@@ -471,11 +471,19 @@ Frontend-only, no schema/backend involvement.
 
 ## Notfall Page (Algorithmen)
 
-`/notfall` route (nav "Referenz", lucide `Siren`) — curated emergency algorithm
-cards (Überlebenskette, BLS, 4H/4T, ABCDE, GCS, AMPLE, FAST, Anaphylaxe)
-grouped into Reanimation / Ersteinschätzung / Notfälle. Content lives in
-`ui/src/lib/notfall.ts` — **to be curated by the boss**; add/remove cards there,
-no backend. Local search box filters cards (name/steps/keywords).
+`/notfall` route (nav "Referenz", lucide `Siren`) — **library-sourced** views
+over the corpus, no hard-coded content (`notfall.ts` was deleted; only
+grouping keywords remain in `ui/src/lib/notfallGroups.ts`). Tabs:
+
+- **Algorithmen & SOPs** — everything in `2_Notfall/00_Notfall_SOPs`
+  (md quick-reference: BLS, 4H/4T, ABCDE, AMPLE, GCS, FAST, Anaphylaxie;
+  plus PDFs/images). **Curate by editing the md files in that folder** —
+  the watcher ingests them, the page lists them.
+- **SOPs Notaufnahme** — `1_SOPs/SOPs Notaufnahme`.
+
+Entries group by keyword rules (`notfallGroups.ts`, first match wins); files
+hitting no rule fall into "Weitere". The red banner on the page is the medical
+disclaimer (see 2026-10-21) — keep it.
 
 ## Markdown Rendering & Inline Edit
 
