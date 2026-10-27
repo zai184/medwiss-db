@@ -1,3 +1,13 @@
+## [Unreleased] - 2026-10-27 16-24
+### Removed
+- **QUICKSTART stale auth docs**: the "Default Credentials" table
+  (admin/arzt1/arztin1/pfleger1 + `test123`) and the `/api/v1/auth/login` +
+  `Authorization: Bearer <TOKEN>` curl examples are gone — auth was removed
+  2026-08-29 and those endpoints 404. The search example stays as a plain
+  auth-free curl.
+
+LOC added: ~2 | LOC removed: ~17 | LOC total: ~98,402
+
 ## [Unreleased] - 2026-10-27 15-47
 ### Fixed
 - **`stop.sh` kills actually work again** (179 → 191 lines). Three silent

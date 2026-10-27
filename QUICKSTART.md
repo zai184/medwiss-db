@@ -110,15 +110,6 @@ python scripts/generate_embeddings.py --dry-run
 python scripts/generate_embeddings.py
 ```
 
-## Default Credentials
-
-| Username | Password | Role |
-|----------|----------|------|
-| admin | test123 | Admin |
-| arzt1 | test123 | Editor |
-| arztin1 | test123 | Editor |
-| pfleger1 | test123 | Viewer |
-
 ## Common Commands
 
 ```bash
@@ -128,14 +119,8 @@ python scripts/generate_embeddings.py
 # Health check
 curl http://localhost:8000/health
 
-# Login
-curl -X POST http://localhost:8000/api/v1/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"test123"}'
-
-# Search (requires token)
-curl -H "Authorization: Bearer <TOKEN>" \
-  "http://localhost:8000/api/v1/search?type=fts&q=Atemnot"
+# Search (no authentication — auth was removed 2026-08-29)
+curl "http://localhost:8000/api/v1/search?q=Atemnot"
 
 # Stop everything
 docker-compose down
