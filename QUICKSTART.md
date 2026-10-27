@@ -41,10 +41,11 @@ curl -fsSL https://bun.sh/install | bash
 ```bash
 # Navigate to project
 cd medwiss-db
-
-# Copy environment template
-cp ../.env.example .env
 ```
+
+Every setting has a working default — add a `.env` only to override values
+(`DATABASE_URL`, `LLAMASERVER_URL`, `OCR_BACKENDS`, …). There is no
+`.env.example` to copy.
 
 ## 2. Start Infrastructure
 

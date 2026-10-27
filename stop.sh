@@ -14,9 +14,13 @@ GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Project directories
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$SCRIPT_DIR"
+# Project directory — ${0:A:h} is the script dir (BASH_SOURCE is empty in zsh).
+# find_project_pids scopes every kill by this prefix, so it must not be the
+# caller's cwd — running stop.sh from elsewhere would match nothing.
+PROJECT_ROOT="${0:A:h}"
+
+# One compose invocation (compose v2 plugin, sudo for the shared daemon)
+dc() { sudo docker compose "$@"; }
 
 print_info() {
     echo -e "${BLUE}[INFO]${NC} $1"
@@ -34,9 +38,11 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
-# Find PIDs matching a pattern, excluding self and grep
+# Find PIDs matching a pattern, excluding self.
+# pgrep uses ERE (verified: BRE-style `a\|b` alternation never matches), so
+# patterns below must be written as `a|b` / `(a|b)`.
 find_pids() {
-    pgrep -f "$1" 2>/dev/null | while read pid; do
+    pgrep -f "$1" 2>/dev/null | while read -r pid; do
         # Skip our own process
         [ "$pid" = "$$" ] && continue
         echo "$pid"
@@ -57,11 +63,17 @@ find_project_pids() {
     done
 }
 
-# Kill PIDs with a signal, wait, then SIGKILL survivors
+# Kill every PID in the list with a signal (missing PIDs are ignored).
+# Callers pass one multi-line PID string as a single argument — zsh does not
+# word-split unquoted scalars, so read the list line by line here. Unsplit,
+# `kill -9 "1\n2"` fails and the old `2>/dev/null || true` hid it: multi-PID
+# kills were silently doing nothing.
 kill_pids() {
-    local signal="$1"
+    local signal="$1" list
     shift
-    for pid in "$@"; do
+    list="$*"
+    printf '%s\n' "$list" | while IFS= read -r pid; do
+        [ -n "$pid" ] || continue
         kill "$signal" "$pid" 2>/dev/null || true
     done
 }
@@ -83,25 +95,25 @@ print_info "Stopping Medizinische Wissensdatenbank services..."
 # === Phase 1: Kill leaf processes (tesseract, whisper) ===
 # These are the CPU hogs — spawned by batch workers for OCR
 print_info "Phase 1: Stopping KI pipeline subprocesses (tesseract, whisper)..."
-TESSERACT_PIDS=$(find_project_pids "tesseract.*ocr\|tesseract.*psm\|tesseract.*oem" || true)
+TESSERACT_PIDS=$(find_project_pids "tesseract.*(ocr|psm|oem)" || true)
 WHISPER_PIDS=$(find_project_pids "whisper" || true)
 if [ -n "$TESSERACT_PIDS" ]; then
     print_info "  Killing tesseract: $TESSERACT_PIDS"
-    kill_pids -9 $TESSERACT_PIDS
+    kill_pids -9 "$TESSERACT_PIDS"
 fi
 if [ -n "$WHISPER_PIDS" ]; then
     print_info "  Killing whisper: $WHISPER_PIDS"
-    kill_pids -9 $WHISPER_PIDS
+    kill_pids -9 "$WHISPER_PIDS"
 fi
 
 # === Phase 2: Kill multiprocessing workers ===
 # These are children of uvicorn that survive parent SIGTERM.
 # They keep processing files and spawning tesseract.
 print_info "Phase 2: Stopping batch/pipeline workers..."
-WORKER_PIDS=$(find_project_pids "multiprocessing\.\(spawn\|resource_tracker\)" || true)
+WORKER_PIDS=$(find_project_pids "multiprocessing\.(spawn|resource_tracker)" || true)
 if [ -n "$WORKER_PIDS" ]; then
     print_info "  Killing multiprocessing workers: $WORKER_PIDS"
-    kill_pids -9 $WORKER_PIDS
+    kill_pids -9 "$WORKER_PIDS"
 fi
 
 # === Phase 3: Kill uvicorn/FastAPI backend ===
@@ -109,23 +121,23 @@ print_info "Phase 3: Stopping FastAPI backend..."
 UVICORN_PIDS=$(find_project_pids "uvicorn" || true)
 if [ -n "$UVICORN_PIDS" ]; then
     print_info "  Killing uvicorn: $UVICORN_PIDS"
-    kill_pids -TERM $UVICORN_PIDS
+    kill_pids -TERM "$UVICORN_PIDS"
     sleep 1
-    kill_pids -9 $UVICORN_PIDS
+    kill_pids -9 "$UVICORN_PIDS"
 fi
 
 # Also kill `uv run` wrapper if still around
 UV_PIDS=$(find_project_pids "uv run.*uvicorn" || true)
 if [ -n "$UV_PIDS" ]; then
-    kill_pids -9 $UV_PIDS
+    kill_pids -9 "$UV_PIDS"
 fi
 
 # === Phase 4: Kill SvelteKit/Vite frontend ===
 print_info "Phase 4: Stopping SvelteKit frontend..."
-VITE_PIDS=$(find_project_pids "vite.*dev\|bun.*dev\|node.*vite" || true)
+VITE_PIDS=$(find_project_pids "vite.*dev|bun.*dev|node.*vite" || true)
 if [ -n "$VITE_PIDS" ]; then
     print_info "  Killing vite/bun: $VITE_PIDS"
-    kill_pids -9 $VITE_PIDS
+    kill_pids -9 "$VITE_PIDS"
 fi
 
 # === Phase 5: Kill any other project-related processes ===
@@ -134,7 +146,7 @@ for pattern in "pipeline/orchestrator" "pipeline/monitor" "services/source_watch
     PIDS=$(find_project_pids "$pattern" || true)
     if [ -n "$PIDS" ]; then
         print_info "  Killing $pattern: $PIDS"
-        kill_pids -9 $PIDS
+        kill_pids -9 "$PIDS"
     fi
 done
 
@@ -150,12 +162,12 @@ kill_port 8081   # Embedding sidecar
 
 # === Phase 7: Stop Docker containers (postgres + sidecar) ===
 print_info "Phase 7: Stopping Docker containers..."
-cd "$PROJECT_ROOT"
-sudo docker-compose down 2>/dev/null || true
+cd "$PROJECT_ROOT" || exit 1 # never compose-down an unrelated project in the caller's cwd
+dc down 2>/dev/null || true
 SIDECAR_COMPOSE="/srv/docker/llamaserver/docker-compose.sidecar.yml"
 if [ -f "$SIDECAR_COMPOSE" ]; then
     print_info "Stopping embedding sidecar..."
-    sudo docker compose -f "$SIDECAR_COMPOSE" down 2>/dev/null || true
+    dc -f "$SIDECAR_COMPOSE" down 2>/dev/null || true
 fi
 
 # === Phase 8: Final sweep ===
@@ -164,11 +176,11 @@ jobs -p 2>/dev/null | xargs -r kill -9 2>/dev/null || true
 sleep 0.5
 
 # === Verification ===
-REMAINING=$(ps -eo pid,args 2>/dev/null | grep -E "medwiss|$PROJECT_ROOT" | grep -v "grep\|stop.sh\|$$" | wc -l)
+REMAINING=$(pgrep -af "medwiss|$PROJECT_ROOT" 2>/dev/null | grep -vc "grep\|stop.sh\|$$")
 if [ "$REMAINING" -gt 0 ]; then
     echo ""
     print_warning "Some processes may still be running:"
-    ps -eo pid,ppid,stat,%cpu,args 2>/dev/null | grep -E "medwiss|$PROJECT_ROOT" | grep -v "grep\|stop.sh\|$$"
+    pgrep -af "medwiss|$PROJECT_ROOT" 2>/dev/null | grep -v "grep\|stop.sh\|$$"
     echo ""
 else
     print_success "All services stopped!"

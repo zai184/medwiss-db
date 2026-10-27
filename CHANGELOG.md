@@ -1,3 +1,52 @@
+## [Unreleased] - 2026-10-27 15-47
+### Fixed
+- **`stop.sh` kills actually work again** (179 → 191 lines). Three silent
+  failures, each confirmed with live decoy processes before and after:
+  1. **Multi-PID kills were no-ops** — zsh does not word-split unquoted
+     scalars, so `kill_pids -9 $PIDS` handed `kill` one invalid multi-line
+     argument and `2>/dev/null || true` hid the failure; only single-PID
+     matches (or Phase 6's `xargs` port kills) ever worked. `kill_pids` now
+     reads the PID list line by line; call sites quoted.
+  2. **BRE patterns fed to an ERE engine** — pgrep uses ERE (proved: `a\|b`
+     matches nothing, `a|b` matches), so Phase 1 tesseract, Phase 2
+     multiprocessing and Phase 4 vite/bun/node alternations never matched.
+     Rewritten as `tesseract.*(ocr|psm|oem)`,
+     `multiprocessing\.(spawn|resource_tracker)`, `vite.*dev|bun.*dev|node.*vite`.
+  3. **`PROJECT_ROOT` was the caller's cwd** (`${BASH_SOURCE[0]}` is empty in
+     zsh) → `find_project_pids` scoped every named kill to the wrong prefix;
+     running stop.sh from another directory matched nothing. Now `${0:A:h}`.
+  Also: compose unified on `docker compose` via `dc()` (was mixed
+  `sudo docker-compose`/`docker compose`), `cd || exit 1` before `dc down`
+  (never compose-down an unrelated project in the caller's cwd), verification
+  `ps | grep` → `pgrep`. Verified: `shellcheck -s bash` 0 findings, `zsh -n` OK,
+  full run from `/tmp` killed both planted project-scoped decoys and exited 0.
+
+LOC added: ~36 | LOC removed: ~24 | LOC total: ~98,417
+
+## [Unreleased] - 2026-10-27 15-27
+### Changed
+- **`start.sh` streamlined** (284 → 199 lines): five near-identical prereq
+  blocks collapsed into one loop + `case` for install hints; dead `.env.example`
+  copy branch removed (no such file anywhere in the tree); stale
+  "Default Credentials admin/test123" banner removed (auth gone 2026-08-29);
+  macOS/Windows browser branches dropped (NixOS box); compose CLI unified on
+  `docker compose` through one `dc()` helper (prereq now checks the plugin, not
+  the standalone `docker-compose` binary).
+  Fixes found while cutting: `${BASH_SOURCE[0]}` is empty in zsh, so
+  `PROJECT_ROOT` was the **caller's** cwd — now `${0:A:h}` (script dir, works
+  from anywhere); `sleep 3`/`sleep 4` + one-shot curl replaced by the existing
+  `wait_for_health` poller (a cold uvicorn/vite boot beat the fixed sleeps and
+  aborted startup); `bun install` now runs unconditionally (a `bun.lock` change
+  never landed before); optional sidecar/llamaserver health timeouts no longer
+  abort the whole startup after their own "may still be loading" warning;
+  `cleanup` propagates real failure statuses instead of always exiting 0
+  (verified: missing-dep exit 1, `set -e` exit 1, Ctrl+C/SIGTERM exit 0).
+  Verified: `shellcheck -s bash` 0 findings, `zsh -n` OK, prereq happy path +
+  failure branch, `wait_for_health` healthy/timeout paths, `free_port` kill.
+  QUICKSTART.md: dead `cp ../.env.example .env` step replaced (no such file).
+
+LOC added: ~72 | LOC removed: ~157 | LOC total: ~98,405
+
 ## [Unreleased] - 2026-10-21 12-50
 ### Reverted
 - **Notfall tabs restored** (boss decision after 12-30 merge): "Algorithmen"
