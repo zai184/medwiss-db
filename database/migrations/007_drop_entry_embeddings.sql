@@ -5,7 +5,10 @@
 -- reads it. chunks.embedding (AWMF Leitlinien search, sidecar 2048) is
 -- untouched — pgvector stays installed.
 --
--- Run on existing databases: psql -U medwiss -d medwiss < database/migrations/007_drop_entry_embeddings.sql
+-- Run on existing databases (there is no host psql — the client lives in the
+-- db container):
+--   sudo docker compose exec -T db psql -U medwiss -d medwiss \
+--       < database/migrations/007_drop_entry_embeddings.sql
 -- Fresh installs get the reduced schema from database/schema.sql.
 
 DROP INDEX IF EXISTS idx_knowledge_entries_embedding;

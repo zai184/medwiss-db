@@ -9,8 +9,9 @@
     `idx_knowledge_entries_embedding` gone (pgvector stays — `chunks.embedding`
     serves Leitlinien search).
   - `database/migrations/007_drop_entry_embeddings.sql` for existing databases —
-    **run it manually on tux and VPS** (`psql -U medwiss -d medwiss < …/007…`),
-    nothing applies it automatically.
+    **run it manually on tux and VPS**, nothing applies it automatically. There
+    is no host `psql` on tux; run it through the db container:
+    `sudo docker compose exec -T db psql -U medwiss -d medwiss < database/migrations/007_drop_entry_embeddings.sql`
   - `database/models.py`: `KnowledgeEntry.embedding` field gone.
   - `api/services/file_sync.py`: ingest no longer calls the LLM to embed each
     new file (import, call site, `_generate_embedding` helper removed).
