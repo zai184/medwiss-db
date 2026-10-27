@@ -1,3 +1,34 @@
+## [Unreleased] - 2026-10-27 16-43
+### Removed
+- **`1_AGENTS.md`** — stray tracked personal file (kitty/qtile/neo4j notes, no
+  secret patterns) that sat in the repo root and on public GitHub.
+- **`knowledge_entries.embedding` end-to-end** — entry-level vector search died
+  with hybrid search (2026-09-01), yet the column was still written on every
+  ingest and by `scripts/generate_embeddings.py`, and nothing read it.
+  - `database/schema.sql`: `embedding vector(1536)` column + IVFFLAT
+    `idx_knowledge_entries_embedding` gone (pgvector stays — `chunks.embedding`
+    serves Leitlinien search).
+  - `database/migrations/007_drop_entry_embeddings.sql` for existing databases —
+    **run it manually on tux and VPS** (`psql -U medwiss -d medwiss < …/007…`),
+    nothing applies it automatically.
+  - `database/models.py`: `KnowledgeEntry.embedding` field gone.
+  - `api/services/file_sync.py`: ingest no longer calls the LLM to embed each
+    new file (import, call site, `_generate_embedding` helper removed).
+  - Deleted `scripts/generate_embeddings.py` (261 lines) and the now-orphaned
+    `pipeline/embeddings.py` (215 lines); `medwiss-embeddings` entry point and
+    the `tqdm` dependency added earlier today drop out again (`uv lock` clean).
+  - Docs: QUICKSTART §6, README/scripts/pipeline trees, root AGENTS index,
+    tech-stack and Known-Issues lines; dead monkeypatch removed from
+    `tests/test_ingest_ondemand.py`.
+- **`api/AGENTS.md`**: router tree now lists all 12 routers (was 4).
+
+Verified: full `uv run --extra test pytest` → **94 passed**, `ruff check` clean
+on touched files, `import api.main / file_sync / database.models` OK,
+`uv lock --check` rc=0, doc sweep for the removed feature only matches the
+migration's own comments.
+
+LOC added: ~30 | LOC removed: ~748 | LOC total: ~97,667
+
 ## [Unreleased] - 2026-10-27 16-36
 ### Fixed
 - **Repo-wide staleness sweep — every live doc re-checked against the code.**

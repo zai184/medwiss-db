@@ -79,7 +79,6 @@ def test_text_file_goes_through_processor(tmp_path, monkeypatch):
     monkeypatch.setattr(fs, "calculate_file_hash", lambda p: "def")
     monkeypatch.setattr(svc, "_link_only_index", lambda *a, **k: (_ for _ in ()).throw(AssertionError("text file must not be link-only")))
     monkeypatch.setattr(svc, "_create_entry_from_result", lambda r, s, h: MagicMock(id=2))
-    monkeypatch.setattr(svc, "_generate_embedding", lambda e: None)
 
     f = tmp_path / "doc.md"
     f.write_text("# heading", encoding="utf-8")

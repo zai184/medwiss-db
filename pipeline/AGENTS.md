@@ -19,7 +19,6 @@ pipeline/
 ├── ocr_backend.py      # ordered-try seam over OCR backends (OCR_BACKENDS)
 ├── remote_ocr.py       # OpenRouter vision client (glm-4.6v)
 ├── batch_processor.py  # single-file process_file + calculate_file_hash only
-├── embeddings.py       # Vector embedding generation
 └── prompts/
     └── summarize/      # Summarization skill prompts (studie, leitlinie, screenshot, standard)
 ```

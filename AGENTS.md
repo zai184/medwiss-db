@@ -2,8 +2,8 @@
 
 > Medical Knowledge Database - Architecture and Implementation Documentation
 
-	**Last Updated:** 2026-10-27 (repo-wide staleness sweep against code: README Batch-Import/JWT/roles/folder-table, QUICKSTART init_db.py + hybrid + bun.lockb + references-404, root AGENTS diagram/env-table/known-issues/recent-fixes, all module AGENTS re-checked; pyproject drops entry points for deleted modules and declares `tqdm` (undeclared import in generate_embeddings.py), TODO publish marked done 2026-10-20. Earlier today: stale auth docs purged from README (### Authentication endpoints) and api/AGENTS.md (auth.py router, dependencies.py JWT deps, Auth-requirements row, Bearer convention), all removed with auth 2026-08-29; QUICKSTART Default Credentials table + login/Bearer curls dropped earlier today; stop.sh kill fixes: multi-PID kills were no-ops — zsh does not word-split, so `kill -9 "1\n2"` failed silently; BRE patterns in pgrep's ERE engine never matched (tesseract/multiprocessing/vite phases); PROJECT_ROOT was the caller's cwd so scoping matched nothing outside the repo dir; compose unified via `dc()`, `cd || exit 1` before `down`, verification `ps|grep` → `pgrep`. Also start.sh streamlined 284→199 lines: prereq checks → one loop, dead `.env.example`/credentials/mac+Windows branches dropped, compose unified via `dc()`; fixes: zsh `${BASH_SOURCE[0]}` was empty → `${0:A:h}` script dir, fixed `sleep 3`/`sleep 4` → `wait_for_health` polling, `bun install` unconditional, sidecar health timeout no longer aborts startup, cleanup propagates real exit codes. Earlier: 2026-10-15 deploy host/port moved to gitignored `.private/deploy.env`; home paths and WireGuard address live in `.private/infra.md`. Earlier: svelte-check warnings 32→1: entry detail/edit staleness bugs fixed — same-route navigation kept old entry's form data, detail uses `$derived` + `inhaltOverride`, edit re-snapshots via `formSnapshot` effect; a11y label/aria-controls/role fixes; dead CSS deleted; KIPreview+bibliothek icon CSS made `:global` (was never applying — {@html}/lucide passthrough); StatCard runes cleanup. Security audit 2026-09-24 fully cleared: stored XSS High fixed via shared `ui/src/lib/highlight.ts` escape-then-mark + bun test regression (`cd ui && bun test`, bun-types added); uv.lock upgrades pillow 12.3.0 / starlette 1.8.0 / python-multipart 0.0.32 / anyio / idna / pydantic-settings / mako / click; requirements.txt deleted — uv.lock is the only dep source, QUICKSTART updated; start.sh dev API binds 127.0.0.1; files.py allowlist via Path.is_relative_to (sibling-prefix rejected); PubMed via defusedxml; README warning block replaces stale admin credentials.)
-	**Total LOC:** ~98,385
+	**Last Updated:** 2026-10-27 (removed `1_AGENTS.md` (stray personal file) and `knowledge_entries.embedding` end-to-end: column + IVFFLAT index out of `schema.sql`, model field out of `database/models.py`, ingest writer out of `file_sync.py`, `scripts/generate_embeddings.py` + `pipeline/embeddings.py` deleted, `medwiss-embeddings` entry point and `tqdm` dependency dropped, migration `007_drop_entry_embeddings.sql` for existing databases (`chunks.embedding` for Leitlinien search untouched); `api/AGENTS.md` router tree now lists all 12 routers. Earlier today: repo-wide staleness sweep against code: README Batch-Import/JWT/roles/folder-table, QUICKSTART init_db.py + hybrid + bun.lockb + references-404, root AGENTS diagram/env-table/known-issues/recent-fixes, all module AGENTS re-checked; pyproject drops entry points for deleted modules and declares `tqdm` (undeclared import in generate_embeddings.py), TODO publish marked done 2026-10-20. Earlier today: stale auth docs purged from README (### Authentication endpoints) and api/AGENTS.md (auth.py router, dependencies.py JWT deps, Auth-requirements row, Bearer convention), all removed with auth 2026-08-29; QUICKSTART Default Credentials table + login/Bearer curls dropped earlier today; stop.sh kill fixes: multi-PID kills were no-ops — zsh does not word-split, so `kill -9 "1\n2"` failed silently; BRE patterns in pgrep's ERE engine never matched (tesseract/multiprocessing/vite phases); PROJECT_ROOT was the caller's cwd so scoping matched nothing outside the repo dir; compose unified via `dc()`, `cd || exit 1` before `down`, verification `ps|grep` → `pgrep`. Also start.sh streamlined 284→199 lines: prereq checks → one loop, dead `.env.example`/credentials/mac+Windows branches dropped, compose unified via `dc()`; fixes: zsh `${BASH_SOURCE[0]}` was empty → `${0:A:h}` script dir, fixed `sleep 3`/`sleep 4` → `wait_for_health` polling, `bun install` unconditional, sidecar health timeout no longer aborts startup, cleanup propagates real exit codes. Earlier: 2026-10-15 deploy host/port moved to gitignored `.private/deploy.env`; home paths and WireGuard address live in `.private/infra.md`. Earlier: svelte-check warnings 32→1: entry detail/edit staleness bugs fixed — same-route navigation kept old entry's form data, detail uses `$derived` + `inhaltOverride`, edit re-snapshots via `formSnapshot` effect; a11y label/aria-controls/role fixes; dead CSS deleted; KIPreview+bibliothek icon CSS made `:global` (was never applying — {@html}/lucide passthrough); StatCard runes cleanup. Security audit 2026-09-24 fully cleared: stored XSS High fixed via shared `ui/src/lib/highlight.ts` escape-then-mark + bun test regression (`cd ui && bun test`, bun-types added); uv.lock upgrades pillow 12.3.0 / starlette 1.8.0 / python-multipart 0.0.32 / anyio / idna / pydantic-settings / mako / click; requirements.txt deleted — uv.lock is the only dep source, QUICKSTART updated; start.sh dev API binds 127.0.0.1; files.py allowlist via Path.is_relative_to (sibling-prefix rejected); PubMed via defusedxml; README warning block replaces stale admin credentials.)
+	**Total LOC:** ~97,667
 # Documentation
 !! Important: after working on the codebase, write all changes to CHANGELOG.md including timestamp (yyyy-mm-dd hh-mm), LOC added and LOC total. update AGENTS.md !!
 
@@ -90,7 +90,7 @@ Application code is GNU AGPL-3.0 (`LICENSE`), the same license as Odysseus. Ther
 | **Database** | PostgreSQL 15 + pgvector | Index of source files, tags, and guideline chunks |
 | **Backend** | FastAPI + SQLAlchemy | REST API |
 | **OCR** | Tesseract (pytesseract) + OpenRouter glm-4.6v | On-demand image/PDF text extraction |
-| **AI** | Llamaserver (local LLM) + OpenRouter | Summarization, RAG, embeddings |
+| **AI** | Llamaserver (local LLM) + OpenRouter | Summarization, RAG |
 | **Frontend** | SvelteKit + TypeScript | Web UI |
 | **UI types from API** | `./scripts/gen-api.sh` | FastAPI OpenAPI → `contracts/api/openapi.json` + `ui/src/lib/api-types.d.ts` |
 | **Package Manager** | bun | Fast JS/TS package manager & runtime |
@@ -133,7 +133,6 @@ medwiss-db/
 │   ├── ocr.py                  # Tesseract OCR (local backend)
 │   ├── ocr_backend.py          # Ordered-try OCR seam (tesseract / openrouter-vision)
 │   ├── remote_ocr.py           # OpenRouter vision OCR (glm-4.6v)
-│   ├── embeddings.py            # Vector embedding generation
 │   ├── orchestrator.py          # On-demand extract_text + summarize_file
 │   ├── batch_processor.py       # Single-file process_file + calculate_file_hash
 │   ├── classification_resolver.py # LLM output resolution
@@ -155,7 +154,7 @@ medwiss-db/
 ├── scripts/                     # Utility scripts
 │   ├── gen-api.sh              # FastAPI OpenAPI → ui/src/lib/api-types.d.ts
 │   ├── export_openapi.py
-│   ├── generate_embeddings.py  # Batch embedding generation
+│   ├── import_files_as_links.py  # Link-only import
 │   └── stop.sh                 # Stop all services
 │
 ├── config/                      # Configuration system
@@ -233,7 +232,6 @@ medwiss-db/
 
 - `idx_knowledge_entries_fts` - GIN index on `search_vector` (FTS)
 - `idx_knowledge_entries_title_trgm` - GIN index on `titel` (fuzzy)
-- `idx_knowledge_entries_embedding` - IVFFLAT index on `embedding` (vector)
 
 ## API Endpoints
 
@@ -741,7 +739,7 @@ The app sidebar (`ui/src/routes/+layout.svelte`) is collapsible via a toggle but
 ## Known Issues
 
 ### Infrastructure Requirements
-- **Llamaserver** (optional — summarize, chunk RAG, entry embeddings): start with
+- **Llamaserver** (optional — summarize and chunk RAG): start with
   `./start.sh --qwen` (compose files under `/srv/docker/llamaserver`, together with
   the CPU embedding sidecar on `:8081`). Auth key: `LLAMASERVER_API_KEY`.
 - **Embedding sidecar** (`:8081`): needed only for Leitlinien chunk search in

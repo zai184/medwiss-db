@@ -14,10 +14,18 @@ api/
 ├── database.py            # SQLAlchemy engine & session
 ├── models.py            # Pydantic request/response models
 └── routers/
-    ├── entries.py       # CRUD for knowledge entries
-    ├── classifications.py # /fachgebiete, /diagnosen, /symptome
+    ├── entries.py       # CRUD + tag-suggestions
+    ├── classifications.py # /fachgebiete, /diagnosen, /symptome, /dokumenttypen, /ordner-labels, resolve-labels, pending-review
     ├── search.py        # /search keyword+filters, /search/chunks, /search/chunks/rag
-    └── stats.py         # /stats/overview, /stats/by-fach
+    ├── stats.py         # /stats/overview, /by-category, /by-fach, /by-diagnose, /recent
+    ├── pipeline.py      # /pipeline/process-file (single file)
+    ├── files.py         # /files view/download/info, /files/sync, admin sync-status
+    ├── summarize.py     # /entries/{id}/summarize, /entries/{id}/transcribe
+    ├── sources.py       # /sources (configured folder list)
+    ├── admin.py         # /admin/classify-from-filename (regex classification)
+    ├── icd11.py         # /icd11/token (WHO OAuth2 proxy)
+    ├── references.py    # /references (live medlinks.txt parse)
+    └── pubmed.py        # /pubmed/search
 ```
 
 ## WHERE TO LOOK

@@ -103,7 +103,7 @@ medwiss-db/
 │   └── duplicate_detector.py     # SHA-256 duplicate detection
 ├── config/               # Source folder configuration
 ├── scripts/              # CLI tools
-│   └── generate_embeddings.py  # Batch entry embeddings
+│   └── import_files_as_links.py  # Link-only import
 ├── search/               # Search implementations
 └── ui/                  # SvelteKit frontend
 ```

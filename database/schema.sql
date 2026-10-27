@@ -118,9 +118,6 @@ CREATE TABLE knowledge_entries (
     -- FTS (Full-Text Search) - automatically updated via trigger
     search_vector   TSVECTOR,
 
-    -- Vector embedding for similarity search (1536 dimensions for text-embedding models)
-    embedding       vector(1536),
-
     -- Metadata
     version         INTEGER DEFAULT 1,
     created_at      TIMESTAMPTZ DEFAULT NOW(),
@@ -140,9 +137,6 @@ CREATE INDEX idx_knowledge_entries_dokumenttyp_id ON knowledge_entries(dokumentt
 CREATE INDEX idx_knowledge_entries_schwierigkeit ON knowledge_entries(schwierigkeit);
 CREATE INDEX idx_knowledge_entries_unterkategorie ON knowledge_entries(unterkategorie);
 CREATE INDEX idx_knowledge_entries_created_at ON knowledge_entries(created_at DESC);
-
--- ivfflat index for ANN (Approximate Nearest Neighbor) similarity search on embeddings
-CREATE INDEX idx_knowledge_entries_embedding ON knowledge_entries USING ivfflat(embedding vector_cosine_ops) WITH (lists = 100);
 
 
 -- ============================================================

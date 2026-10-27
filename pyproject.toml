@@ -28,13 +28,9 @@ dependencies = [
     "pyyaml>=6.0",
     # CLI output formatting
     "rich>=13.0.0",
-    "tqdm>=4.66.0",
     "pymupdf>=1.24.14",
     "defusedxml>=0.7.1",
 ]
-
-[project.scripts]
-medwiss-embeddings = "scripts.generate_embeddings:main"
 
 [project.optional-dependencies]
 test = [

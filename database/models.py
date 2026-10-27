@@ -253,7 +253,6 @@ class KnowledgeEntry(Base):
     source_path: Mapped[Optional[str]] = mapped_column(Text)
     file_hash: Mapped[Optional[str]] = mapped_column(String(64))
     search_vector: Mapped[Optional[str]] = mapped_column(TSVECTOR)
-    embedding: Mapped[Optional[list]] = mapped_column(Vector(1536))
     version: Mapped[int] = mapped_column(Integer, default=1)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)

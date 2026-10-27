@@ -101,19 +101,6 @@ bun run dev
 
 UI available at: http://localhost:5175
 
-## 6. Generate Embeddings (Optional)
-
-Batch-generate vector embeddings for knowledge entries (llamaserver must be
-running). They are stored in `knowledge_entries.embedding` (pgvector, IVFFLAT):
-
-```bash
-# Preview what will be processed
-uv run python scripts/generate_embeddings.py --dry-run
-
-# Generate embeddings
-uv run python scripts/generate_embeddings.py
-```
-
 ## Common Commands
 
 ```bash

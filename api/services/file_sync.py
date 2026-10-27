@@ -27,7 +27,6 @@ from config import (
 from database.models import KnowledgeEntry
 from pipeline.batch_processor import BatchProcessor, calculate_file_hash
 from pipeline.classification_resolver import resolve_classifications
-from pipeline.embeddings import generate_embedding
 
 from api.services.hierarchy_labels import (
     CATEGORY_LABELS,
@@ -322,7 +321,6 @@ class FileSyncService:
             else:
                 self._update_entry_from_result(entry, result, source, file_hash)
 
-            self._generate_embedding(entry)
             self.db.commit()
             self.db.refresh(entry)
             logger.info(f"Successfully ingested {path} → entry {entry.id}")
@@ -512,15 +510,6 @@ class FileSyncService:
             )
 
         self.db.flush()
-
-    def _generate_embedding(self, entry: KnowledgeEntry) -> None:
-        """Generate and store the vector embedding for an entry (best effort)."""
-        try:
-            text_to_embed = f"{entry.titel}\n\n{entry.inhalt[:4000]}"
-            entry.embedding = generate_embedding(text_to_embed)
-            self.db.flush()
-        except Exception as e:
-            logger.error(f"Failed to generate embedding for entry {entry.id}: {e}")
 
     # ------------------------------------------------------------------
     # Single-file operations (watcher entry points)
