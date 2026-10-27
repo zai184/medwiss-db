@@ -27,6 +27,18 @@ UI_DIR="$PROJECT_ROOT/ui"
 # One compose invocation for the whole script (compose v2 plugin, sudo for the shared daemon)
 dc() { sudo docker compose "$@"; }
 
+# `up -d` on a stopped container whose network was deleted fails with
+# "network ... not found" (compose reuses the container instead of rewiring it).
+# Retry once via down+up, which recreates network and container. A healthy,
+# already-running sidecar succeeds on the first `up -d` and never reaches this.
+sidecar_up() {
+    if ! dc "$@" up -d; then
+        print_warning "compose up failed — recreating stale container/network"
+        dc "$@" down 2>/dev/null || true
+        dc "$@" up -d || true
+    fi
+}
+
 print_info()    { echo -e "${BLUE}[INFO]${NC} $1"; }
 print_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
 print_warning() { echo -e "${YELLOW}[WARNING]${NC} $1"; }
@@ -127,13 +139,13 @@ if [ "$START_QWEN" = true ] && [ -f "$SIDECAR_COMPOSE" ] && [ -f "$LLAMA_BASE" ]
     # Keep compose stderr visible: a swallowed `up -d` failure otherwise only shows
     # up as a health timeout with no cause.
     print_info "Starting embedding sidecar + Llamaserver (qwen35-9b)..."
-    dc -f "$SIDECAR_COMPOSE" -f "$LLAMA_BASE" -f "$QWEN_OVERRIDE" up -d || true
+    sidecar_up -f "$SIDECAR_COMPOSE" -f "$LLAMA_BASE" -f "$QWEN_OVERRIDE"
     wait_for_health "http://localhost:8080/health" "Llamaserver" 120 || true
     # 8B Q6 on CPU takes minutes to load — give it a realistic timeout
     wait_for_health "http://localhost:8081/health" "Embedding sidecar" 300 && SIDECAR_OK=true
 elif [ -f "$SIDECAR_COMPOSE" ]; then
     print_info "Starting embedding sidecar on :8081 (CPU-only)..."
-    dc -f "$SIDECAR_COMPOSE" up -d || true
+    sidecar_up -f "$SIDECAR_COMPOSE"
     wait_for_health "http://localhost:8081/health" "Embedding sidecar" 300 && SIDECAR_OK=true
 else
     print_warning "Sidecar compose not found at $SIDECAR_COMPOSE — Leitlinien search will be unavailable"

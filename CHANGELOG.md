@@ -1,3 +1,16 @@
+## [Unreleased] - 2026-10-27 16-56
+### Fixed
+- **start.sh self-heals the stale sidecar container.** The follow-up error gave
+  the root cause: `network c0fcca… not found` — the stopped `llama-server-emb`
+  container was still bound to a since-deleted network, so `up -d` reused the
+  container and the daemon refused to start it (compose file itself is fine:
+  plain default project network, no external references). New `sidecar_up()`
+  retries once through `down` + `up -d`, which recreates network and container;
+  a healthy sidecar succeeds on the first `up -d` and is never restarted.
+  `zsh -n` OK, shellcheck 0 findings.
+
+LOC added: ~14 | LOC removed: ~2 | LOC total: ~97,694
+
 ## [Unreleased] - 2026-10-27 16-54
 ### Fixed
 - **start.sh sidecar handling.** A startup run showed
