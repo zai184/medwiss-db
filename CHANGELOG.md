@@ -1,3 +1,15 @@
+## [Unreleased] - 2026-10-27 16-26
+### Removed
+- **README + api/AGENTS.md stale auth docs**: README's `### Authentication`
+  endpoint block (`/auth/login`, `/auth/register`, `/auth/me` — all 404 since
+  2026-08-29) is gone, and api/AGENTS.md no longer references the deleted
+  `auth.py` router, the deleted `dependencies.py` (JWT auth deps), the
+  `Auth requirements` table row (`get_current_user()`, `require_role()`) or the
+  `Authorization: Bearer` convention. Remaining `Bearer` mentions in docs/ are
+  WHO ICD-11 and Llamaserver API tokens — different thing, still live.
+
+LOC added: ~1 | LOC removed: ~10 | LOC total: ~98,393
+
 ## [Unreleased] - 2026-10-27 16-24
 ### Removed
 - **QUICKSTART stale auth docs**: the "Default Credentials" table

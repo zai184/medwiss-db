@@ -127,11 +127,6 @@ medwiss-db/
 
 ## API Endpoints
 
-### Authentication
-- `POST /api/v1/auth/login` - Get JWT token
-- `POST /api/v1/auth/register` - Create user (Admin)
-- `GET /api/v1/auth/me` - Current user
-
 ### Knowledge Entries
 - `GET /api/v1/entries` - List entries (paginated)
 - `GET /api/v1/entries/{id}` - Get single entry
