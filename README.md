@@ -43,7 +43,11 @@ There is no login (see warning above) — the frontend is ready to use.
 The library is the folder tree under your content root (`~/Dokumente/Medizin` by
 default; override with `MEDWISS_CONTENT_ROOT`). There is no import command —
 the source watcher and the startup reconcile index the files directly.
-Configured folders (`config/sources.yaml`):
+
+Folders are **auto-discovered** (every numbered folder `NN_*` plus the
+`Fortbildung YYYY` years) and merged with `config/sources.yaml`, which supplies
+the overrides: categories, default Fachgebiete, file types, extra paths.
+Currently:
 
 | Folder | Category |
 |--------|----------|
@@ -56,6 +60,7 @@ Configured folders (`config/sources.yaml`):
 | 7_Fragebögen | Questionnaires |
 | 8_Infoblätter | Info sheets |
 | 9_Prüfungen | Exams |
+| 10_Bücher | Books (auto-discovered) |
 | Fortbildung | CME (2024–2026) |
 | Fortbildungen | CME platforms (Amboss, GiDi, …) |
 

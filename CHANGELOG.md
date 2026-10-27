@@ -1,3 +1,21 @@
+## [Unreleased] - 2026-10-27 16-54
+### Fixed
+- **start.sh sidecar handling.** A startup run showed
+  `[ERROR] Embedding sidecar not ready after 60s` with no cause: the
+  `up -d 2>/dev/null || true` swallowed compose's own error, so a sidecar that
+  never starts looks like a bare health timeout. Now compose stderr stays
+  visible (still non-fatal — startup continues), the health timeout is
+  60 s → 300 s (8 B Q6 on CPU loads in minutes), and the closing banner reports
+  `Embed Sidecar: NOT READY — …` instead of claiming it is up. Reproduced on
+  tux: `curl http://localhost:8081/health` → rc 7, nothing listening.
+- **Source-folder docs**: `load_sources()` is *discovery ∪ yaml* — the live
+  `GET /api/v1/sources` lists 12 sources / 14 watch paths, including
+  auto-discovered `10_Bücher` (category `buecher`), which no doc mentioned.
+  README explains the merge and adds the row; `config/AGENTS.md` documents
+  `discover_sources.py`; root AGENTS tree comment corrected.
+
+LOC added: ~26 | LOC removed: ~11 | LOC total: ~97,682
+
 ## [Unreleased] - 2026-10-27 16-43
 ### Removed
 - **`1_AGENTS.md`** — stray tracked personal file (kitty/qtile/neo4j notes, no

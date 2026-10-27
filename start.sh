@@ -119,18 +119,22 @@ SIDECAR_COMPOSE="/srv/docker/llamaserver/docker-compose.sidecar.yml"
 LLAMA_BASE="/srv/docker/llamaserver/docker-compose.yml"
 QWEN_OVERRIDE="/srv/docker/llamaserver/models/qwen35-9b.yml"
 
+SIDECAR_OK=false
 if [ "$START_QWEN" = true ] && [ -f "$SIDECAR_COMPOSE" ] && [ -f "$LLAMA_BASE" ] && [ -f "$QWEN_OVERRIDE" ]; then
     # Start sidecar + main Llamaserver together so --remove-orphans doesn't kill the sidecar.
     # No --wait: it blocks until BOTH are healthy and can hang for minutes while the 9B
     # model loads. Start detached, poll health separately, tolerate slow loads.
+    # Keep compose stderr visible: a swallowed `up -d` failure otherwise only shows
+    # up as a health timeout with no cause.
     print_info "Starting embedding sidecar + Llamaserver (qwen35-9b)..."
-    dc -f "$SIDECAR_COMPOSE" -f "$LLAMA_BASE" -f "$QWEN_OVERRIDE" up -d 2>/dev/null || true
+    dc -f "$SIDECAR_COMPOSE" -f "$LLAMA_BASE" -f "$QWEN_OVERRIDE" up -d || true
     wait_for_health "http://localhost:8080/health" "Llamaserver" 120 || true
-    wait_for_health "http://localhost:8081/health" "Embedding sidecar" 60 || true
+    # 8B Q6 on CPU takes minutes to load — give it a realistic timeout
+    wait_for_health "http://localhost:8081/health" "Embedding sidecar" 300 && SIDECAR_OK=true
 elif [ -f "$SIDECAR_COMPOSE" ]; then
     print_info "Starting embedding sidecar on :8081 (CPU-only)..."
-    dc -f "$SIDECAR_COMPOSE" up -d 2>/dev/null || true
-    wait_for_health "http://localhost:8081/health" "Embedding sidecar" 60 || true
+    dc -f "$SIDECAR_COMPOSE" up -d || true
+    wait_for_health "http://localhost:8081/health" "Embedding sidecar" 300 && SIDECAR_OK=true
 else
     print_warning "Sidecar compose not found at $SIDECAR_COMPOSE — Leitlinien search will be unavailable"
 fi
@@ -191,7 +195,11 @@ if [ "$START_QWEN" = true ]; then
 else
     echo -e "${BLUE}Llamaserver:${NC}  http://localhost:8080 (not started — use --qwen)"
 fi
-echo -e "${BLUE}Embed Sidecar:${NC} http://localhost:8081 (CPU, Leitlinien search)"
+if [ "$SIDECAR_OK" = true ]; then
+    echo -e "${BLUE}Embed Sidecar:${NC} http://localhost:8081 (CPU, Leitlinien search)"
+else
+    echo -e "${YELLOW}Embed Sidecar:${NC} NOT READY — Leitlinien embed search unavailable (see compose output above)"
+fi
 echo ""
 echo -e "${YELLOW}Press Ctrl+C to stop all services${NC}"
 echo ""
