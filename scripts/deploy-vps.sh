@@ -34,22 +34,26 @@ rsync -a $DRY -e "$RSH" --rsync-path="$RP" \
 rsync -a $DRY -e "$RSH" --rsync-path="$RP" --exclude '__pycache__' "$APP/search/"   "$DEST/search/"
 rsync -a $DRY -e "$RSH" --rsync-path="$RP" --exclude '__pycache__' "$APP/pipeline/" "$DEST/pipeline/"
 rsync -a $DRY -e "$RSH" --rsync-path="$RP" --exclude '__pycache__' "$APP/config/"   "$DEST/config/"
+rsync -a $DRY -e "$RSH" --rsync-path="$RP" --exclude '__pycache__' "$APP/database/" "$DEST/database/"
 rsync -a $DRY -e "$RSH" --rsync-path="$RP" "$APP/data/" "$DEST/data/"
 rsync -a $DRY -e "$RSH" --rsync-path="$RP" "$APP/pyproject.toml" "$APP/uv.lock" "$DEST"
 
 # New or removed Python deps: frozen sync against the lock we just copied.
-ssh -p "$MEDWISS_DEPLOY_PORT" "$HOST" 'sudo -u medwiss bash -lc "cd /srv/medwiss/app && UV_PYTHON_PREFERENCE=system uv sync --frozen"'
-
-# Dependency change? run manually on the VPS:
-#   sudo -u medwiss bash -lc 'cd /srv/medwiss/app && UV_PYTHON_PREFERENCE=system uv sync --frozen'
+# Side effects after the rsynces stay dry-run-gated: --dry-run must not write
+# the revision file or restart services on old code.
+if [ -z "$DRY" ]; then
+  ssh -p "$MEDWISS_DEPLOY_PORT" "$HOST" 'sudo -u medwiss bash -lc "cd /srv/medwiss/app && UV_PYTHON_PREFERENCE=system uv sync --frozen"'
+fi
 
 # Slice 3 — SPA build on tux, rsync static
 ( cd ui && bun run build )
 rsync -a $DRY --delete -e "$RSH" --rsync-path="$RP" "$APP/ui/build/" "$HOST:/srv/medwiss/build/"
 
-# Deployed git sha for the fleet dashboard (medwiss-serve /healthz git field)
-echo -n "$SHA" | $RSH "$HOST" 'sudo tee /srv/medwiss/.git-revision >/dev/null'
+if [ -z "$DRY" ]; then
+  # Deployed git sha for the fleet dashboard (medwiss-serve /healthz git field)
+  echo -n "$SHA" | $RSH "$HOST" 'sudo tee /srv/medwiss/.git-revision >/dev/null'
 
-# Slice 5 — restart + active check (no UI checks; boss verifies the app)
-$RSH "$HOST" 'sudo systemctl restart medwiss-api medwiss-web && systemctl is-active medwiss-api medwiss-web postgresql'
+  # Slice 5 — restart + active check (no UI checks; boss verifies the app)
+  $RSH "$HOST" 'sudo systemctl restart medwiss-api medwiss-web && systemctl is-active medwiss-api medwiss-web postgresql'
+fi
 echo "=== done (sha=$SHA) ==="

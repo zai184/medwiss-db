@@ -1,3 +1,24 @@
+## [Unreleased] - 2026-10-27 17-33
+### Fixed
+- **`scripts/deploy-vps.sh` ships `database/` and honors `--dry-run`.** Slice 2 was
+  missing the `database/` rsync the playbook lists — migration files never reached
+  the VPS (007 applied by hand this run, shipped by the new line from now on). And
+  only the rsynces were dry-run-gated: `--dry-run` still wrote
+  `/srv/medwiss/.git-revision` and restarted `medwiss-api`/`medwiss-web` onto old
+  code — uv sync, sha write, and restart now sit behind `[ -z "$DRY" ]`; the stale
+  "run manually on the VPS" comment (the script already did it) dropped. `bash -n`
+  OK; pre-existing shellcheck SC1090 (dynamic source of gitignored
+  `.private/deploy.env`) left untouched.
+### Changed
+- **VPS deployed (c&p) at `768f9c4`** via `scripts/deploy-vps.sh`: healthz
+  `{"ok":true … git 768f9c4}`, `/version`, `/entries`, `/search`, `/stats` all
+  200, units `active active active`. Migration
+  `007_drop_entry_embeddings.sql` applied on the VPS (`DROP INDEX` + `ALTER
+  TABLE`; 0 embedding matches in `\d knowledge_entries`). Deploy skill staleness
+  fixed (remotes = origin GitHub + backup NAS; LOC total points at AGENTS.md).
+
+LOC added: ~12 | LOC removed: ~8 | LOC total: ~97,721
+
 ## [Unreleased] - 2026-10-27 17-26
 ### Changed
 - **Ctrl+C is now a full stop.** cleanup additionally downs the Llamaserver
