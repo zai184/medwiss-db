@@ -41,7 +41,9 @@ Repo is AGPL-3.0, no CLA, corpus excluded, gitleaks clean. Remaining before publ
 5. **Boss: UI smoke** — KI-preview icon spin/colors + bibliothek row icon colors
    now actually apply (were silently dead scoped CSS); entry→entry navigation
    (detail + edit) shows the new entry without reload.
-6. **Publish**: new public remote, push, keep `backup` remote local-only.
+6. ~~Publish~~ **done 2026-10-20** — public `main` on github.com/zai184/medwiss-db
+   (fresh single-commit squash); the old history lives on the `backup` remote
+   as branch `archive` and is never pushed to GitHub.
 
 Done 2026-10-15: stored-XSS High fixed (`highlight.ts` + tests), audit findings
 cleared (deps, requirements.txt deleted, 127.0.0.1 bind, is_relative_to,

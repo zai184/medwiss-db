@@ -16,7 +16,7 @@ api/
 └── routers/
     ├── entries.py       # CRUD for knowledge entries
     ├── classifications.py # /fachgebiete, /diagnosen, /symptome
-    ├── search.py        # /search?type=fts|faceted|hybrid
+    ├── search.py        # /search keyword+filters, /search/chunks, /search/chunks/rag
     └── stats.py         # /stats/overview, /stats/by-fach
 ```
 

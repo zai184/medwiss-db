@@ -16,18 +16,19 @@ audio files are link-only playable entries with no text extraction.
 pipeline/
 ├── orchestrator.py      # extract_text dispatch + summarize_file (on-demand)
 ├── ocr.py              # Tesseract OCR for images (one backend)
-├── ocr_backend.py      # (planned) ordered-try seam over OCR backends
-├── remote_ocr.py       # (planned) GLM-OCR MaaS + OpenRouter vision clients
+├── ocr_backend.py      # ordered-try seam over OCR backends (OCR_BACKENDS)
+├── remote_ocr.py       # OpenRouter vision client (glm-4.6v)
 ├── batch_processor.py  # single-file process_file + calculate_file_hash only
 ├── embeddings.py       # Vector embedding generation
 └── prompts/
     └── summarize/      # Summarization skill prompts (studie, leitlinie, screenshot, standard)
+```
 
 ## Responsibilities
 
 | Task | Module | Notes |
 |------|--------|-------|
-| Image/PDF → Text | `ocr.py` (+ remote backends) | Tesseract local; GLM-OCR MaaS / OpenRouter vision remote |
+| Image/PDF → Text | `ocr.py` (+ remote backends) | Tesseract local; OpenRouter glm-4.6v remote |
 | Text file → Text | `orchestrator.extract_text` | direct read |
 | File hashing | `batch_processor.calculate_file_hash` | SHA-256, used by sync/entry-service |
 
@@ -39,6 +40,8 @@ pipeline/
 - Extraction is on-demand: summarize flow and `/pipeline/process-file`.
   Ingest (`file_sync.ingest_file`) indexes extraction-dependent files
   metadata-only (empty `inhalt`).
+- Backend order comes from `OCR_BACKENDS` (`tesseract`, `openrouter-vision`);
+  empty list = OCR unavailable.
 - No audio transcription (whisper removed). Audio files are link-only.
 - File type detection by extension (.png, .jpg, .pdf, .txt)
 

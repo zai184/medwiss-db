@@ -1,3 +1,43 @@
+## [Unreleased] - 2026-10-27 16-36
+### Fixed
+- **Repo-wide staleness sweep — every live doc re-checked against the code.**
+  - **README.md**: `## Batch Import` CLI block and the `/batch-import` endpoint
+    list (stack deleted 2026-09); source-folder table had 11 wrong names —
+    rebuilt from `config/sources.yaml`; architecture backend boxes
+    (`Auth │ … │ Batch`) and the `Auth | JWT (python-jose)` tech-stack row;
+    `batch_import_cli.py` tree line; `JWT_SECRET` env row; `(Editor+)` role
+    suffixes; bare `uvicorn`/`pytest` → `uv run …`. Source folders now documented
+    as watcher/reconcile ingest (there is no import command).
+  - **QUICKSTART.md**: `python scripts/init_db.py` ×2 (file does not exist),
+    "For hybrid search" wording (hybrid removed 2026-09-01), `bun.lockb` →
+    `bun.lock`, dead "Referenz 404 — mount the router" troubleshooting (it is
+    mounted), `uv` added to prerequisites, DB init rewritten (schema is mounted
+    into `docker-entrypoint-initdb.d`, seeds via `seeds.sql`).
+  - **AGENTS.md**: `/login` diagram box, `Tables (9)` → `(14)` (12 in
+    `schema.sql` + `chunks`/`awmf_documents` from alembic), `/pipeline/process`
+    → `/pipeline/process-file`, deleted `init_db.py`/`run_pipeline.py` tree
+    lines, `LOCAL_API_KEY` → `LLAMASERVER_API_KEY` (two tables), `API_V1_STR` →
+    `API_VERSION`, Known-Issues Llamaserver block (no AI classification left;
+    `./start.sh --qwen` semantics), "Recent Fixes (v1.7.x)" section replaced by
+    a pointer to CHANGELOG (it still advertised FTS/faceted/hybrid fixes),
+    folder-derived-Fachgebiet sentence (no batch imports / no LLM calls).
+  - **Module AGENTS**: `api/` (auth remnants), `pipeline/` ("(planned)" OCR
+    backends are live; GLM-OCR MaaS → OpenRouter glm-4.6v), `ui/src/`
+    (settings route never existed, axios "auth header", real route list),
+    `database/` (materialized view, users-in-seeds, `schwierigkeit` CHECK —
+    all gone), `config/` (batch-import header, `SOURCES_PATH` →
+    `MEDWISS_CONTENT_ROOT`, wrong folder-name examples), `scripts/`
+    (`run_pipeline.py` row).
+  - **TODO.md**: publish step marked done 2026-10-20 (public `main`).
+- **`pyproject.toml`**: dropped `medwiss-import` / `medwiss-pipeline` entry
+  points (modules deleted with the batch-import stack) and declared `tqdm`,
+  which `scripts/generate_embeddings.py` imports but was never a declared
+  dependency — `uv run medwiss-embeddings --help` failed with
+  `ModuleNotFoundError`, now prints usage and exits 0. `uv lock` picks up
+  tqdm 4.70.1; `uv lock --check` clean.
+
+LOC added: ~120 | LOC removed: ~128 | LOC total: ~98,385
+
 ## [Unreleased] - 2026-10-27 16-26
 ### Removed
 - **README + api/AGENTS.md stale auth docs**: README's `### Authentication`

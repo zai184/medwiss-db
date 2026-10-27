@@ -6,9 +6,9 @@
 
 | File | Purpose |
 |------|---------|
-| `schema.sql` | Source of truth. All tables, indexes, triggers, materialized view. Run this to init. |
+| `schema.sql` | Source of truth. All tables, indexes, triggers. Run this to init (docker-compose mounts it into `docker-entrypoint-initdb.d`). |
 | `models.py` | SQLAlchemy ORM models. Must stay in sync with `schema.sql`. |
-| `seeds.sql` | Test data: specialties, diagnoses, symptoms, users, entries, junctions. |
+| `seeds.sql` | Test data: specialties, diagnoses, symptoms, entries, junctions. |
 
 ## CONVENTIONS
 
@@ -16,7 +16,7 @@
 
 **Naming**: German table/column names (`fachgebiete`, `diagnosen`, `symptome`, `titel`, `inhalt`). Junction tables: `entry_<entity>`.
 
-**CHECK constraints**: Enforced at DB level for `role`, `aktion`, `schwierigkeit`. Do not rely only on app-level validation.
+**CHECK constraints**: Enforced at DB level for `role` (legacy `users` column) and `aktion` (audit log). Do not rely only on app-level validation.
 
 **Triggers** (in `schema.sql` only, not models):
 - `trg_knowledge_entries_search_vector`: Auto-updates `search_vector` on INSERT/UPDATE using German `to_tsvector` with weighted fields (titel=A, zusammenfassung=B, inhalt=C).

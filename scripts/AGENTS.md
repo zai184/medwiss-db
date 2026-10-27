@@ -1,12 +1,11 @@
 # scripts/ - CLI Tools & Utilities
 
-**OVERVIEW:** Standalone CLI scripts for batch operations, pipeline execution, and manual testing. All scripts run outside the FastAPI server process.
+**OVERVIEW:** Standalone CLI scripts for data import, label maintenance, embedding generation, and manual testing. All scripts run outside the FastAPI server process.
 
 ## WHERE TO LOOK
 
 | Script | Purpose | Key Pattern |
 |--------|---------|-------------|
-| `run_pipeline.py` | Manual AI pipeline execution | Direct `pipeline.orchestrator` imports; outputs to `pipeline/output/` |
 | `generate_embeddings.py` | Batch embedding generation | Direct SQLAlchemy + `pipeline.embeddings`; requires running llamaserver; commits in batches |
 | `import_files_as_links.py` | Fast link-only import (no OCR) | Direct DB access via `SessionLocal`; skips existing by `source_path`; maps folder names to categories |
 | `test_*.py` | Manual integration tests | Not pytest. Run directly with `python scripts/test_*.py`. Use `get_db_context()` context manager |

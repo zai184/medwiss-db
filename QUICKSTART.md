@@ -28,12 +28,18 @@ Follow the steps below if you prefer to start services manually or the script do
 
 - **Docker** & **Docker Compose** v2+
 - **Python** 3.11+
+- **uv** (Python package manager)
 - **bun** (JavaScript runtime & package manager)
 - **Git**
 
 ### Install bun
 ```bash
 curl -fsSL https://bun.sh/install | bash
+```
+
+### Install uv
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 ## 1. Clone & Setup Environment
@@ -59,11 +65,11 @@ docker-compose ps
 
 ## 3. Initialize Database
 
-```bash
-# Option A: Automated setup
-python scripts/init_db.py
+The schema is applied automatically by the container on first start
+(`docker-compose.yml` mounts `database/schema.sql`). Seed lookup tables and
+test entries once with:
 
-# Option B: Manual
+```bash
 docker-compose exec -T db psql -U medwiss -d medwiss < database/seeds.sql
 ```
 
@@ -97,17 +103,15 @@ UI available at: http://localhost:5175
 
 ## 6. Generate Embeddings (Optional)
 
-For hybrid search, generate vector embeddings:
+Batch-generate vector embeddings for knowledge entries (llamaserver must be
+running). They are stored in `knowledge_entries.embedding` (pgvector, IVFFLAT):
 
 ```bash
-cd medwiss-db
-source .venv/bin/activate
-
 # Preview what will be processed
-python scripts/generate_embeddings.py --dry-run
+uv run python scripts/generate_embeddings.py --dry-run
 
 # Generate embeddings
-python scripts/generate_embeddings.py
+uv run python scripts/generate_embeddings.py
 ```
 
 ## Common Commands
@@ -125,10 +129,10 @@ curl "http://localhost:8000/api/v1/search?q=Atemnot"
 # Stop everything
 docker-compose down
 
-# Reset database
+# Reset database (schema re-applies on first container start; then re-seed)
 docker-compose down -v
 docker-compose up -d
-python scripts/init_db.py
+docker-compose exec -T db psql -U medwiss -d medwiss < database/seeds.sql
 ```
 
 ## Troubleshooting
@@ -137,9 +141,6 @@ python scripts/init_db.py
 ```bash
 docker-compose logs db
 ```
-
-### Referenz page: Request failed with status code 404
-`GET /api/v1/references` must be mounted in `api/main.py` (`include_router(references.router, …)`). `medlinks.txt` lives at `~/Dokumente/Medizin/md/medlinks.txt`. Restart uvicorn after mounting.
 
 ### Connection refused
 ```bash
@@ -158,6 +159,6 @@ uv sync
 ### UI build fails
 ```bash
 cd ui
-rm -rf node_modules bun.lockb
+rm -rf node_modules bun.lock
 bun install
 ```

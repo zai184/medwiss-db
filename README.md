@@ -23,7 +23,7 @@ A browser for local medical folders. The files under the source folders are the 
 docker-compose up -d
 
 # Start API server
-uvicorn api.main:app --reload
+uv run uvicorn api.main:app --reload
 
 # In another terminal, start frontend
 cd ui && bun run dev
@@ -38,42 +38,26 @@ cd ui && bun run dev
 
 There is no login (see warning above) — the frontend is ready to use.
 
-## Batch Import
+## Source Folders
 
-Import medical content folders using the CLI tool:
-
-```bash
-# Preview what would be imported
-python scripts/batch_import_cli.py preview "1_SOPs" --dry-run
-
-# Import a specific folder
-python scripts/batch_import_cli.py import folder "1_SOPs" --yes
-
-# Import all configured folders
-python scripts/batch_import_cli.py import all --yes
-
-# Check import status
-python scripts/batch_import_cli.py status <job_id>
-
-# Retry failed imports
-python scripts/batch_import_cli.py retry <job_id>
-```
-
-### Available Source Folders
+The library is the folder tree under your content root (`~/Dokumente/Medizin` by
+default; override with `MEDWISS_CONTENT_ROOT`). There is no import command —
+the source watcher and the startup reconcile index the files directly.
+Configured folders (`config/sources.yaml`):
 
 | Folder | Category |
 |--------|----------|
 | 1_SOPs | SOP |
-| 2_Leitlinien | Guidelines |
-| 3_Studien | Studies |
-| 4_Red Flags | Red Flags |
-| 5_Fragebögen | Questionnaires |
-| 6_Nachschlagen | Reference |
-| 7_Infoblätter | Info Sheets |
-| 8_Fächer | Subjects |
-| 9_Fälle | Cases |
-| 10_Pharma | Pharma |
-| Fortbildung | Continuing Education |
+| 2_Notfall | Emergency medicine |
+| 3_Leitlinien | Guidelines |
+| 4_Red_Flags | Red flags |
+| 5_Fächer | Medical specialties |
+| 6_Pharmakologie | Pharmacology |
+| 7_Fragebögen | Questionnaires |
+| 8_Infoblätter | Info sheets |
+| 9_Prüfungen | Exams |
+| Fortbildung | CME (2024–2026) |
+| Fortbildungen | CME platforms (Amboss, GiDi, …) |
 
 ## Architecture
 
@@ -85,7 +69,7 @@ python scripts/batch_import_cli.py retry <job_id>
                    │ HTTP/REST
 ┌─────────────────▼────────────────────────┐
 │         Backend (FastAPI)                 │
-│   Auth │ CRUD │ Search │ Pipeline │ Batch│
+│  CRUD │ Search │ Stats │ Pipeline │ Files │
 └──────────────────┬────────────────────────┘
                    │ SQL
 ┌─────────────────▼────────────────────────┐
@@ -101,9 +85,8 @@ python scripts/batch_import_cli.py retry <job_id>
 | Database | PostgreSQL 15 + pgvector |
 | Backend | FastAPI + SQLAlchemy |
 | Frontend | SvelteKit + TypeScript |
-| Auth | JWT (python-jose) |
-| OCR | Tesseract |
-| AI | Llamaserver (local LLM) |
+| OCR | Tesseract / OpenRouter glm-4.6v |
+| AI | Llamaserver (local) + OpenRouter |
 | Package Manager | bun |
 
 ## Project Structure
@@ -115,12 +98,12 @@ medwiss-db/
 │   └── services/          # Business logic
 ├── database/              # Schema & models
 ├── pipeline/              # KI processing modules
-│   ├── batch_processor.py  # Batch file processing
-│   ├── classification_resolver.py  # LLM output resolution
+│   ├── batch_processor.py  # Single-file processing + hashing
+│   ├── classification_resolver.py  # Dokumenttyp/Ordner-Label resolution
 │   └── duplicate_detector.py     # SHA-256 duplicate detection
 ├── config/               # Source folder configuration
 ├── scripts/              # CLI tools
-│   └── batch_import_cli.py  # Batch import CLI
+│   └── generate_embeddings.py  # Batch entry embeddings
 ├── search/               # Search implementations
 └── ui/                  # SvelteKit frontend
 ```
@@ -130,26 +113,23 @@ medwiss-db/
 ### Knowledge Entries
 - `GET /api/v1/entries` - List entries (paginated)
 - `GET /api/v1/entries/{id}` - Get single entry
-- `POST /api/v1/entries` - Create entry (Editor+)
-- `PUT /api/v1/entries/{id}` - Update entry (Editor+)
-- `DELETE /api/v1/entries/{id}` - Delete entry (Editor+)
+- `POST /api/v1/entries` - Create entry
+- `PUT /api/v1/entries/{id}` - Update entry
+- `DELETE /api/v1/entries/{id}` - Delete entry
 
 ### Search
+- `GET /api/v1/search?q=` - Keyword search over entries (tier-ranked)
 - `GET /api/v1/search/chunks?q=` - AWMF chunk vector search (dedicated `/leitlinien` page)
-
-### Batch Import
-- `POST /api/v1/batch-import` - Start import job
-- `GET /api/v1/batch-import/{job_id}` - Get status
-- `GET /api/v1/batch-import/{job_id}/errors` - Get errors
-- `POST /api/v1/batch-import/{job_id}/retry` - Retry failed
 
 ## Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `DATABASE_URL` | postgresql://... | PostgreSQL connection |
-| `JWT_SECRET` | changeme | JWT signing secret |
-| `LLAMASERVER_URL` | http://localhost:8080 | Llamaserver endpoint |
+| `LLAMASERVER_URL` | http://localhost:8080 | Local LLM endpoint (summarize, RAG, embeddings) |
+| `OPENROUTER_API_KEY` | (unset) | Cloud fallback for chat/vision OCR — optional |
+| `OCR_BACKENDS` | (empty) | Ordered on-demand OCR backends (`tesseract`, `openrouter-vision`); empty = OCR unavailable |
+| `MEDWISS_CONTENT_ROOT` | `~/Dokumente/Medizin` | Content root that the source folders resolve against |
 
 ## Development
 
@@ -161,13 +141,13 @@ cd ui && bun install
 bun run dev
 
 # Run API dev server
-uvicorn api.main:app --reload
+uv run uvicorn api.main:app --reload
 
 # Run linting
 ruff check .
 
-# Run tests (if any)
-pytest
+# Run tests
+uv run --extra test pytest
 ```
 
 ## License
