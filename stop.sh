@@ -163,11 +163,11 @@ kill_port 8081   # Embedding sidecar
 # === Phase 7: Stop Docker containers (postgres + sidecar) ===
 print_info "Phase 7: Stopping Docker containers..."
 cd "$PROJECT_ROOT" || exit 1 # never compose-down an unrelated project in the caller's cwd
-dc down 2>/dev/null || true
+dc down || true # stderr visible: a swallowed down error leaves containers running silently
 SIDECAR_COMPOSE="/srv/docker/llamaserver/docker-compose.sidecar.yml"
 if [ -f "$SIDECAR_COMPOSE" ]; then
     print_info "Stopping embedding sidecar..."
-    dc -f "$SIDECAR_COMPOSE" down 2>/dev/null || true
+    dc -f "$SIDECAR_COMPOSE" down || true
 fi
 
 # === Phase 8: Final sweep ===
@@ -176,11 +176,15 @@ jobs -p 2>/dev/null | xargs -r kill -9 2>/dev/null || true
 sleep 0.5
 
 # === Verification ===
-REMAINING=$(pgrep -af "medwiss|$PROJECT_ROOT" 2>/dev/null | grep -vc "grep\|stop.sh\|$$")
-if [ "$REMAINING" -gt 0 ]; then
+# `codegraph` excluded: the codegraph MCP daemon keeps the repo db path in its
+# argv, so it matches the pattern while being dev tooling, not a service.
+# Second stage keeps only PID-headed lines: a multi-line argv (node -e ...) would
+# otherwise leak continuation lines past every -v exclusion.
+LEFTOVERS=$(pgrep -af "medwiss|$PROJECT_ROOT" 2>/dev/null | grep -v "grep\|stop.sh\|codegraph\|$$" | grep "^[0-9]" || true)
+if [ -n "$LEFTOVERS" ]; then
     echo ""
     print_warning "Some processes may still be running:"
-    pgrep -af "medwiss|$PROJECT_ROOT" 2>/dev/null | grep -v "grep\|stop.sh\|$$"
+    echo "$LEFTOVERS"
     echo ""
 else
     print_success "All services stopped!"

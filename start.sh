@@ -86,10 +86,18 @@ wait_for_postgres() {
     return 1
 }
 
+# Runs on SIGINT/SIGTERM and then again on EXIT (the `exit` inside fires the
+# EXIT trap) — the guard makes it run once, so no double compose-down or second
+# sudo prompt while Ctrl+C is still unwinding.
+CLEANED=0
 cleanup() {
     local st=$? # capture before any command below clobbers it
+    if [ "$CLEANED" = 1 ]; then
+        return 0
+    fi
+    CLEANED=1
     print_warning "Shutting down services..."
-    dc down 2>/dev/null || true
+    dc down || true # stderr visible: a swallowed down error leaves containers running silently
     # Kill Llamaserver if we started it
     pkill -f "llama-server.*qwen35-9b" 2>/dev/null || true
     # Kill background processes

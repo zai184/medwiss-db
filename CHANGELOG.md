@@ -1,3 +1,20 @@
+## [Unreleased] - 2026-10-27 17-22
+### Fixed
+- **Ctrl+C cleanup runs once; stop.sh false-alarm listing fixed.** From your Ctrl+C
+  run: the WARNING banner printed twice because `cleanup` is trapped on
+  SIGINT/SIGTERM *and* EXIT — the `exit` inside fired the EXIT trap again, so
+  `dc down` ran twice (second sudo prompt, the `Das hat nicht funktioniert`
+  retry). A `CLEANED` guard makes it run once. The `dc … down 2>/dev/null`
+  swallows in start.sh cleanup and stop.sh Phase 7 are dropped — same lesson as
+  the sidecar: a hidden down error leaves containers running silently. stop.sh's
+  leftover report no longer lists the codegraph MCP daemon: its argv carries the
+  repo db path (`medwiss` matches) and its multi-line `node -e` script leaked
+  continuation lines past `grep -v`; verification now excludes `codegraph` and
+  keeps only PID-headed lines (live check with codegraph running → 0 leftovers).
+  `zsh -n` OK, shellcheck 0 findings on both scripts.
+
+LOC added: ~18 | LOC removed: ~6 | LOC total: ~97,706
+
 ## [Unreleased] - 2026-10-27 16-56
 ### Fixed
 - **start.sh self-heals the stale sidecar container.** The follow-up error gave
