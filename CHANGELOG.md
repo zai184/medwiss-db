@@ -1,3 +1,15 @@
+## [Unreleased] - 2026-10-27 17-26
+### Changed
+- **Ctrl+C is now a full stop.** cleanup additionally downs the Llamaserver
+  project (embedding sidecar; the qwen main-server container in `--qwen` mode,
+  same `-f` set as startup) — plain `dc down` only covered the medwiss-db
+  project, so the sidecar survived Ctrl+C before. Compose path definitions
+  (`SIDECAR_COMPOSE`/`LLAMA_BASE`/`QWEN_OVERRIDE`) moved next to `PROJECT_ROOT`
+  so cleanup sees them wherever Ctrl+C lands; the mid-script duplicates dropped.
+  `zsh -n` OK, shellcheck 0 findings.
+
+LOC added: ~14 | LOC removed: ~3 | LOC total: ~97,717
+
 ## [Unreleased] - 2026-10-27 17-22
 ### Fixed
 - **Ctrl+C cleanup runs once; stop.sh false-alarm listing fixed.** From your Ctrl+C

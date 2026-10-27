@@ -23,6 +23,11 @@ NC='\033[0m' # No Color
 # Project directories — ${0:A:h} is the script dir (BASH_SOURCE is empty in zsh)
 PROJECT_ROOT="${0:A:h}"
 UI_DIR="$PROJECT_ROOT/ui"
+# Llamaserver compose files (sidecar lives outside the repo). Defined up here so
+# cleanup() can stop what startup started no matter where Ctrl+C lands.
+SIDECAR_COMPOSE="/srv/docker/llamaserver/docker-compose.sidecar.yml"
+LLAMA_BASE="/srv/docker/llamaserver/docker-compose.yml"
+QWEN_OVERRIDE="/srv/docker/llamaserver/models/qwen35-9b.yml"
 
 # One compose invocation for the whole script (compose v2 plugin, sudo for the shared daemon)
 dc() { sudo docker compose "$@"; }
@@ -98,6 +103,14 @@ cleanup() {
     CLEANED=1
     print_warning "Shutting down services..."
     dc down || true # stderr visible: a swallowed down error leaves containers running silently
+    # Ctrl+C also stops the Llamaserver project — embedding sidecar, plus the qwen
+    # main server container in --qwen mode (plain `dc down` above only covers the
+    # medwiss-db project). Same -f set as startup so both halves see the same services.
+    if [ "${START_QWEN:-false}" = true ] && [ -f "$LLAMA_BASE" ] && [ -f "$QWEN_OVERRIDE" ]; then
+        dc -f "$SIDECAR_COMPOSE" -f "$LLAMA_BASE" -f "$QWEN_OVERRIDE" down || true
+    elif [ -f "$SIDECAR_COMPOSE" ]; then
+        dc -f "$SIDECAR_COMPOSE" down || true
+    fi
     # Kill Llamaserver if we started it
     pkill -f "llama-server.*qwen35-9b" 2>/dev/null || true
     # Kill background processes
@@ -135,9 +148,7 @@ dc up -d
 wait_for_postgres
 
 # Embedding sidecar (CPU, Qwen3-Embedding-8B) + optional main Llamaserver live outside the repo
-SIDECAR_COMPOSE="/srv/docker/llamaserver/docker-compose.sidecar.yml"
-LLAMA_BASE="/srv/docker/llamaserver/docker-compose.yml"
-QWEN_OVERRIDE="/srv/docker/llamaserver/models/qwen35-9b.yml"
+# (compose paths defined at the top, next to PROJECT_ROOT)
 
 SIDECAR_OK=false
 if [ "$START_QWEN" = true ] && [ -f "$SIDECAR_COMPOSE" ] && [ -f "$LLAMA_BASE" ] && [ -f "$QWEN_OVERRIDE" ]; then
