@@ -1,4 +1,20 @@
 ## [Unreleased] - 2026-10-27 17-33
+### Changed (2026-11-03)
+- **Dependencies bumped, `release.sh` dep-freshness warning, TODO.md removed.**
+  `bun update` + `uv lock --upgrade` (routine bumps per the new release-deps
+  rule in `~/.agents/docs-standards.md` §2): svelte 5.57.3, svelte-check 4.7.8,
+  tailwind 4.3.4, bun-types 1.4.4, axios/chart.js patch bumps; uv.lock large
+  transitive refresh. Verified: `bun run check` 0 errors / 1 known warning,
+  `bun test` 5 pass. `scripts/release.sh` now warns (non-blocking) when
+  `ui/bun.lock` / `bun.lock` / `uv.lock` are unchanged since the last tag
+  (`bash -n` clean; warn loop exercised with a temp tag). TODO.md deleted per
+  boss call — its still-open items live here until done:
+  (1) boss check `.envrc` (still tracked in git),
+  (2) optional last svelte-check warning `state_referenced_locally`
+      (`ui/src/routes/entry/[id]/edit/+page.svelte:36`),
+  (3) boss UI smoke (KIPreview/bibliothek icons, entry→entry nav),
+  (4) bidirectional corpus sync A (Syncthing) vs C (Unison) pick — still
+      one-way tux → VPS rsync; full proposal `docs/plans/bidirectional-corpus-sync.md`.
 ### Fixed
 - **`scripts/deploy-vps.sh` ships `database/` and honors `--dry-run`.** Slice 2 was
   missing the `database/` rsync the playbook lists — migration files never reached

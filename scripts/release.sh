@@ -23,6 +23,17 @@ ROOT="$(git rev-parse --show-toplevel)"
 cd "$ROOT"
 TODAY="$(date +%Y-%m-%d)"
 
+# 0. Dep freshness warning (public repos ship lockfiles). Warning only —
+#    run `bun update` / `uv lock --upgrade` + tests before releasing if stale.
+if LAST_TAG="$(git describe --tags --abbrev=0 2>/dev/null)"; then
+    for lock in ui/bun.lock bun.lock uv.lock; do
+        [[ -f "$lock" ]] || continue
+        if [[ "$(git log -1 --format=%at -- "$lock")" -lt "$(git log -1 --format=%at "$LAST_TAG")" ]]; then
+            echo "WARN: $lock unchanged since $LAST_TAG — consider 'bun update' / 'uv lock --upgrade' + tests first." >&2
+        fi
+    done
+fi
+
 # 1. Clean tree required — a release is exactly the tagged commit.
 if [[ -n "$(git status --porcelain)" ]]; then
     echo "ERROR: working tree not clean. Commit or stash first." >&2
