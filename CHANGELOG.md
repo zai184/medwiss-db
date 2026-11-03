@@ -15,6 +15,8 @@
   (3) boss UI smoke (KIPreview/bibliothek icons, entry→entry nav),
   (4) bidirectional corpus sync A (Syncthing) vs C (Unison) pick — still
       one-way tux → VPS rsync; full proposal `docs/plans/bidirectional-corpus-sync.md`.
+  **LOC:** +1,426/−949 across 7 files (mostly lockfiles); repo total ~97.7k
+  (per AGENTS.md).
 ### Fixed
 - **`scripts/deploy-vps.sh` ships `database/` and honors `--dry-run`.** Slice 2 was
   missing the `database/` rsync the playbook lists — migration files never reached
