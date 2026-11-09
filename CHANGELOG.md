@@ -1,4 +1,17 @@
 ## [Unreleased] - 2026-10-27 17-33
+### Fixed (2026-11-09)
+- **medwiss-api crash-loop: `psycopg` v3 was undeclared.** The env DB URL
+  selects SQLAlchemy's `+psycopg` (v3) dialect, but pyproject/uv.lock only
+  ever declared `psycopg2-binary` — the 2026-11-03 deploy's `uv sync
+  --frozen` pruned the undeclared driver, so the API died with
+  `ModuleNotFoundError: psycopg` on every start (found during the
+  2026-11-09 fleet update: vps switch returned rc=4; SPA/web unaffected).
+  Fix: `psycopg[binary]>=3.2` declared, `uv lock` (psycopg 3.3.8 +
+  psycopg-binary wheel, tzdata), deployed via playbook path B (rsync
+  api/…+pyproject+uv.lock → `uv sync --frozen` as medwiss → restart
+  medwiss-api). Verified: `Application startup complete`, unit active.
+  +92 LOC (1 pyproject + 91 uv.lock), total ~97,813.
+
 ### Changed (2026-11-03)
 - **Dependencies bumped, `release.sh` dep-freshness warning, TODO.md removed.**
   `bun update` + `uv lock --upgrade` (routine bumps per the new release-deps
