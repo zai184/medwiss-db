@@ -68,11 +68,14 @@ export const CALCULATORS: CalculatorLink[] = [
   { name: 'NIHSS', url: 'https://www.mdcalc.com/calc/715/nih-stroke-scale-score-nihss', discipline: 'Neurologie', keywords: ['stroke', 'schlaganfall', 'nihss', 'apoplex'] },
   { name: 'Glasgow Coma Scale (GCS)', url: 'https://www.mdcalc.com/calc/64/glasgow-coma-scale-score-gcs', discipline: 'Neurologie', keywords: ['gcs', 'koma', 'coma', 'bewusstsein'] },
   // Intensiv
-  { name: 'SOFA Score', url: 'https://www.mdcalc.com/calc/691/sequential-organ-failure-assessment-sofa-score', discipline: 'Intensiv', keywords: ['sofa', 'icu', 'intensiv', 'sepsis'] },
   { name: 'APACHE II Score', url: 'https://www.mdcalc.com/calc/1868/apache-ii-score', discipline: 'Intensiv', keywords: ['apache', 'icu', 'intensiv'] },
-  // Infektiologie
-  { name: 'SIRS & Sepsis Criteria', url: 'https://www.mdcalc.com/calc/1096/sirs-sepsis-septic-shock-criteria', discipline: 'Infektiologie', keywords: ['sepsis', 'sirs'] },
+  { name: 'SAPS II', url: 'https://www.mdcalc.com/calc/4044', discipline: 'Intensiv', keywords: ['saps', 'icu', 'intensiv'] },
+  // Sepsis Screening
+  { name: 'NEWS2', url: 'https://www.mdcalc.com/calc/10083', discipline: 'Infektiologie', keywords: ['sepsis', 'news2'] },
+  { name: 'SOFA', url: 'https://www.mdcalc.com/calc/691/sequential-organ-failure-assessment-sofa-score', discipline: 'Infektiologie', keywords: ['sepsis', 'sofa'] },
   { name: 'qSOFA', url: 'https://www.mdcalc.com/calc/2654/qsofa-quick-sofa-score-sepsis', discipline: 'Infektiologie', keywords: ['sepsis', 'qsofa'] },
+  { name: 'SIRS & Sepsis Criteria', url: 'https://www.mdcalc.com/calc/1096/sirs-sepsis-septic-shock-criteria', discipline: 'Infektiologie', keywords: ['sepsis', 'sirs'] },
+  // Infektiologie
   { name: 'PEN-FAST (Penicillin-Allergie)', url: 'https://www.mdcalc.com/calc/10422/penicillin-allergy-decision-rule-pen-fast', discipline: 'Infektiologie', keywords: ['penicillin', 'allergie', 'allergy'] },
   // Gastro & Hepatologie
   { name: 'BISAP Score (Pankreatitis)', url: 'https://www.mdcalc.com/calc/1735/bisap-score-pancreatitis-mortality', discipline: 'Gastro & Hepatologie', keywords: ['pankreatitis', 'pancreatitis', 'bisap'] },
