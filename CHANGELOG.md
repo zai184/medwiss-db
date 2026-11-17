@@ -1,3 +1,20 @@
+## [Unreleased] - 2026-11-17
+### Fixed (2026-11-17)
+- **Leitlinien "Original öffnen" 500 (VPS).** `GET /files/chunks/{id}/view`
+  did a full-row ORM Chunk select; the model declares `embedding`/`metadata`/
+  `created_at`/`updated_at`, which the keyword-mode VPS chunks table lacks
+  (columns were only ever created by the local embed-mode import) →
+  `UndefinedColumn` → 500 on every Original-öffnen click. Only full-row ORM
+  Chunk read in the app (chunk search is raw SQL, hence never hit). Fix:
+  explicit `db.query(Chunk.id, Chunk.source_path)`; dead `_get_chunk_file_path`
+  helper deleted (5+/9−, `api/routers/files.py`). Second half of the bug:
+  all 594,079 VPS chunk rows carried stale `/home/tux/...` source_paths from
+  the import dump → would 403 after the code fix. One-time idempotent UPDATE
+  on the VPS DB rewrites the prefix to `/srv/medwiss/Dokumente/Medizin/`
+  (sample path verified on the corpus first). Deployed via rsync of
+  `api/routers/files.py` + restart medwiss-api. Local DBs keep working:
+  the explicit-column query is column-shape-agnostic.
+
 ## [Unreleased] - 2026-10-27 17-33
 ### Fixed (2026-11-09)
 - **medwiss-api crash-loop: `psycopg` v3 was undeclared.** The env DB URL

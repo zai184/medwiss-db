@@ -61,13 +61,6 @@ def _is_awmf_path_allowed(path: Path | str) -> bool:
     return Path(path).resolve().is_relative_to(Path(AWMF_ROOT).resolve())
 
 
-def _get_chunk_file_path(chunk: Chunk) -> Optional[Path]:
-    """File path from a chunk's source_path."""
-    if not chunk.source_path:
-        return None
-    return Path(chunk.source_path)
-
-
 def _get_entry_file_path(entry: KnowledgeEntry) -> Optional[Path]:
     """Get the file path from a knowledge entry.
 
@@ -149,11 +142,14 @@ async def view_chunk_file(
     db: Session = Depends(get_db),
 ):
     """Serve an AWMF chunk's source PDF inline (scoped to the AWMF corpus root)."""
-    chunk = db.query(Chunk).filter(Chunk.id == chunk_id).first()
+    # Explicit columns, not a full-row ORM select: the model declares
+    # embedding/metadata/timestamps the keyword-mode chunks table (VPS) lacks,
+    # which 500s every full-row read there.
+    chunk = db.query(Chunk.id, Chunk.source_path).filter(Chunk.id == chunk_id).first()
     if not chunk:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Chunk not found")
 
-    file_path = _get_chunk_file_path(chunk)
+    file_path = Path(chunk.source_path) if chunk.source_path else None
     if not file_path:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No source file associated")
     if not _is_awmf_path_allowed(file_path):
