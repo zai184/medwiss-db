@@ -1,5 +1,6 @@
 """Referenz page — live-parsed medical resource links from medlinks.txt."""
 
+import logging
 import re
 from pathlib import Path
 
@@ -7,6 +8,8 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from config import get_content_root
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["references"])
 
@@ -140,3 +143,51 @@ async def get_references() -> list[Section]:
         return parse_medlinks()
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="medlinks.txt not found")
+
+
+CALCULATORS_PATH = get_content_root() / "md" / "calculators.txt"
+
+
+class Calculator(BaseModel):
+    name: str
+    url: str
+    discipline: str
+    group: str | None = None
+    keywords: list[str] = []
+
+
+def parse_calculators(path: Path = CALCULATORS_PATH) -> list[Calculator]:
+    """Parse calculators.txt into curated calculator links.
+
+    One calculator per line: Discipline | Group | Name | URL | kw, kw, …
+    `Group` may be empty; `#` lines are comments; malformed lines are skipped
+    with a warning (a typo must not silently drop a favorite).
+    """
+    calculators: list[Calculator] = []
+    for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        parts = [p.strip() for p in stripped.split("|")]
+        if len(parts) != 5 or not parts[0] or not parts[2] or not parts[3]:
+            logger.warning("calculators.txt:%d: malformed line skipped: %r", lineno, stripped)
+            continue
+        calculators.append(
+            Calculator(
+                discipline=parts[0],
+                group=parts[1] or None,
+                name=parts[2],
+                url=parts[3],
+                keywords=[k.strip() for k in parts[4].split(",") if k.strip()],
+            )
+        )
+    return calculators
+
+
+@router.get("/calculators")
+async def get_calculators() -> list[Calculator]:
+    """Return curated calculator deep links parsed live from calculators.txt."""
+    try:
+        return parse_calculators()
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="calculators.txt not found")

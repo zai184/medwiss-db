@@ -1,3 +1,24 @@
+## [Unreleased] - 2026-11-19 15-47
+### Added (2026-11-19)
+- **Rechner favorites sourced from a text file (medlinks pattern).** The 41
+  curated deep links no longer live in `ui/src/lib/calculators.ts`; they are
+  parsed live from `~/Dokumente/Medizin/md/calculators.txt` (corpus, VPS via
+  corpus rsync) by new `GET /api/v1/calculators` (`api/routers/references.py`:
+  `parse_calculators` + `Calculator` model; 404 when the file is missing,
+  malformed lines skipped with an API-log warning). Line format:
+  `Fachgebiet | Gruppe | Name | URL | Stichwörter` (`Gruppe` may be empty,
+  `#` = comment) — edit + re-fetch, no rebuild. Rechner page fetches via
+  `referencesApi.getCalculators()` in `onMount` (separate error banner);
+  `calculators.ts` keeps only presentation (types, `DISCIPLINES`, colors,
+  `calculatorMatches`) plus new `disciplineBoxes()` which appends file
+  disciplines missing from `DISCIPLINES` as extra boxes — fixes NIHSS/GCS
+  (Neurologie) having been invisible on the page. Contract regenerated
+  (`./scripts/gen-api.sh`); parser regression test `tests/test_references.py`.
+  Verified: pytest 1 pass, live `curl /api/v1/calculators` 200 with parsed
+  rows (references control 200), `bun run check` 0 errors / 1 known warning,
+  `bun test` 5 pass. LOC +160 net (97,973 total). VPS deploy pending (needs
+  API restart + the txt file via `medwiss-sync`).
+
 ## [Unreleased] - 2026-11-17
 ### Fixed (2026-11-17)
 - **Leitlinien "Original öffnen" 500 (VPS).** `GET /files/chunks/{id}/view`

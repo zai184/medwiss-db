@@ -24,7 +24,7 @@ api/
     ├── sources.py       # /sources (configured folder list)
     ├── admin.py         # /admin/classify-from-filename (regex classification)
     ├── icd11.py         # /icd11/token (WHO OAuth2 proxy)
-    ├── references.py    # /references (live medlinks.txt parse)
+    ├── references.py    # /references + /calculators (live medlinks.txt + calculators.txt parse)
     └── pubmed.py        # /pubmed/search
 ```
 

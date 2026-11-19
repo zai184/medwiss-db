@@ -1,10 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { ExternalLink, Search, Loader2, Calculator, Star } from 'lucide-svelte';
-  import { classificationsApi, type DiagnoseResponse } from '$lib/api';
+  import { classificationsApi, referencesApi, type DiagnoseResponse } from '$lib/api';
   import {
-    CALCULATORS,
-    DISCIPLINES,
+    disciplineBoxes,
     DISCIPLINE_COLORS,
     calculatorMatches,
     type CalculatorLink,
@@ -12,16 +11,18 @@
   } from '$lib/calculators';
 
   // Tier 1: provider search links for any term.
-  // Tier 2: curated deep links in ui/src/lib/calculators.ts (MDCalc favorites).
+  // Tier 2: curated deep links from md/calculators.txt via GET /api/v1/calculators.
   const providers = [
     { name: 'MDCalc', url: (q: string) => `https://www.mdcalc.com/search?q=${encodeURIComponent(q)}` },
     { name: 'QxMD Calculate', url: (q: string) => `https://qxmd.com/calculate?s=${encodeURIComponent(q)}` },
   ];
 
   let diagnoses = $state<DiagnoseResponse[]>([]);
+  let calcs = $state<CalculatorLink[]>([]);
   let query = $state('');
   let loading = $state(true);
   let error = $state<string | null>(null);
+  let calcError = $state<string | null>(null);
 
   const trimmed = $derived(query.trim());
   const searching = $derived(trimmed.length >= 2);
@@ -32,7 +33,7 @@
           .slice(0, 60)
       : []
   );
-  const curatedMatches = $derived(searching ? CALCULATORS.filter((c) => calculatorMatches(c, trimmed)) : []);
+  const curatedMatches = $derived(searching ? calcs.filter((c) => calculatorMatches(c, trimmed)) : []);
 
   function matchDiagnosesFor(calc: CalculatorLink): string[] {
     return diagnoses
@@ -43,7 +44,7 @@
 
   /** Calculators of one discipline, ordered by subgroup definition. */
   function disciplineCalcs(d: DisciplineDef): CalculatorLink[] {
-    const items = CALCULATORS.filter((c) => c.discipline === d.name);
+    const items = calcs.filter((c) => c.discipline === d.name);
     if (!d.groups) return items;
     const ungrouped = items.filter((c) => !c.group);
     const grouped = d.groups.map((g) => ({ g, items: items.filter((c) => c.group === g) }));
@@ -57,6 +58,11 @@
       error = err instanceof Error ? err.message : 'Fehler beim Laden der Diagnosen';
     } finally {
       loading = false;
+    }
+    try {
+      calcs = await referencesApi.getCalculators();
+    } catch (err: unknown) {
+      calcError = err instanceof Error ? err.message : 'Fehler beim Laden der Favoriten';
     }
   });
 </script>
@@ -97,6 +103,10 @@
     <div class="error-banner">{error}</div>
   {/if}
 
+  {#if calcError}
+    <div class="error-banner">{calcError}</div>
+  {/if}
+
   {#if searching && curatedMatches.length > 0}
     <section class="content-section">
       <h2 class="section-title"><span class="title-icon"><Star size={16} /></span> Passende Favoriten ({curatedMatches.length})</h2>
@@ -120,7 +130,7 @@
   {/if}
 
   {#if !searching}
-    {#each DISCIPLINES as d (d.name)}
+    {#each disciplineBoxes(calcs) as d (d.name)}
       {@const items = disciplineCalcs(d)}
       {#if items.length > 0}
         <section class="content-section discipline-box">

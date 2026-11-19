@@ -979,6 +979,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/calculators": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Calculators
+         * @description Return curated calculator deep links parsed live from calculators.txt.
+         */
+        get: operations["get_calculators_api_v1_calculators_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/pubmed/search": {
         parameters: {
             query?: never;
@@ -1050,6 +1070,22 @@ export interface components {
              * @description Medical document to process
              */
             file: string;
+        };
+        /** Calculator */
+        Calculator: {
+            /** Name */
+            name: string;
+            /** Url */
+            url: string;
+            /** Discipline */
+            discipline: string;
+            /** Group */
+            group?: string | null;
+            /**
+             * Keywords
+             * @default []
+             */
+            keywords: string[];
         };
         /**
          * CategoryStats
@@ -4175,6 +4211,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Section"][];
+                };
+            };
+        };
+    };
+    get_calculators_api_v1_calculators_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Calculator"][];
                 };
             };
         };

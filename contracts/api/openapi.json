@@ -2876,6 +2876,32 @@
         }
       }
     },
+    "/api/v1/calculators": {
+      "get": {
+        "tags": [
+          "references"
+        ],
+        "summary": "Get Calculators",
+        "description": "Return curated calculator deep links parsed live from calculators.txt.",
+        "operationId": "get_calculators_api_v1_calculators_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Calculator"
+                  },
+                  "type": "array",
+                  "title": "Response Get Calculators Api V1 Calculators Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/pubmed/search": {
       "get": {
         "tags": [
@@ -3115,6 +3141,48 @@
           "file"
         ],
         "title": "Body_process_uploaded_file_api_v1_pipeline_process_file_post"
+      },
+      "Calculator": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "discipline": {
+            "type": "string",
+            "title": "Discipline"
+          },
+          "group": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Group"
+          },
+          "keywords": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Keywords",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "url",
+          "discipline"
+        ],
+        "title": "Calculator"
       },
       "CategoryStats": {
         "properties": {

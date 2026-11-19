@@ -1,4 +1,5 @@
 import axios from 'axios';
+import type { CalculatorLink } from '$lib/calculators';
 /** Generated OpenAPI types — regenerate with `./scripts/gen-api.sh`. Do not edit api-types.d.ts. */
 export type { components as ApiComponents, paths as ApiPaths } from './api-types';
 
@@ -602,6 +603,10 @@ export interface ReferenceSection {
 export const referencesApi = {
   getReferences: async (): Promise<ReferenceSection[]> => {
     const resp = await apiClient.get('/references');
+    return resp.data;
+  },
+  getCalculators: async (): Promise<CalculatorLink[]> => {
+    const resp = await apiClient.get('/calculators');
     return resp.data;
   },
 };
