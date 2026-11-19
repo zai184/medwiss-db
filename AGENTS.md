@@ -767,9 +767,9 @@ The app sidebar (`ui/src/routes/+layout.svelte`) is collapsible via a toggle but
   `md/calculators.txt`, … reach the VPS within the hour — edit locally, wait
   for the next hourly run, reload the page; rsync `-a` preserves the local
   mtime, `--delete` prunes the VPS mirror when files are removed locally.
-  Never reverse; no Syncthing. (`nixos-vps/modules/medwiss-sync.nix` defines a
-  parallel DAILY system timer `medwiss-sync.timer` — not active on tux; drift
-  to resolve or delete.)
+  Never reverse; no Syncthing. (The parallel daily system timer module
+  `nixos-vps/modules/medwiss-sync.nix` was deleted 2026-11-19 — superseded by
+  this user timer.)
 - The watcher ingests directly (no import jobs); renames (delete+create with same hash) preserve entry ID + manual tags; `on_moved` handles rsync's temp-file rename.
 - Update branch refreshes only content/hash/hierarchy labels — manual tag edits are never overwritten (tags assigned on CREATE only).
 - Startup reconcile runs in a background thread 2 s after boot and heals drift.

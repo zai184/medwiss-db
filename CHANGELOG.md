@@ -34,8 +34,9 @@
   user units; service runs the nixos-vps script with `--apply --delete`),
   `daemon-reload` + `enable --now`: first run finished clean at 16:16:59,
   next fire 17:16:58. The ghost unit is replaced by a disk-backed one.
-  Remaining drift: `modules/medwiss-sync.nix` (daily system timer) still
-  inactive — resolve or delete.
+  Remaining drift resolved: `modules/medwiss-sync.nix` deleted from
+  `nixos-vps` (`bf6328e`, pushed to Codeberg) — no imports anywhere; the
+  hourly user timer is the single corpus-sync mechanism.
 
 ## [Unreleased] - 2026-11-17
 ### Fixed (2026-11-17)
