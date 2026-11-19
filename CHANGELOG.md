@@ -18,6 +18,16 @@
   rows (references control 200), `bun run check` 0 errors / 1 known warning,
   `bun test` 5 pass. LOC +160 net (97,973 total). VPS deploy pending (needs
   API restart + the txt file via `medwiss-sync`).
+- **CORRECTED same day (corpus transport).** The earlier claim "no corpus sync
+  unit exists" was wrong: an hourly tux user timer `sync-medwiss-corpus.timer`
+  (:49) runs `nixos-vps/scripts/sync-medwiss-corpus.sh --apply --delete`,
+  pushing the WHOLE corpus incl. `md/*.txt` to the VPS — so calculators.txt /
+  medlinks.txt edits go live on the VPS within the hour, no deploy. CAVEAT:
+  the unit file is missing on disk (ghost unit, still firing from the loaded
+  user manager; `timers.target.wants` cleaned 2026-11-18 16:13) — a daemon
+  reload or reboot will stop the sync until it is re-armed. The parallel
+  `modules/medwiss-sync.nix` daily system timer is not active. AGENTS.md
+  File-Sync section corrected accordingly.
 
 ## [Unreleased] - 2026-11-17
 ### Fixed (2026-11-17)

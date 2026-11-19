@@ -757,14 +757,18 @@ The app sidebar (`ui/src/routes/+layout.svelte`) is collapsible via a toggle but
 
 ### File Sync Notes (files are the library, PostgreSQL is the index)
 - `~/Dokumente/Medizin` is the single source of truth (`MEDWISS_CONTENT_ROOT` override; VPS: `/srv/medwiss/Dokumente/Medizin` → symlink to `/srv/medwiss/corpus`). **Read-only to the app** — no code path writes there.
-- Local→VPS transport: one-way rsync push (verified 2026-11-19: no
-  `medwiss-sync.service`/`.timer` exists on the VPS — the unit described here
-  earlier was never created). Push changed corpus files directly with
-  `rsync --rsync-path="sudo -u medwiss rsync"` (SSH target: deploy host from
-  gitignored `.private/deploy.env`) into
-  `/srv/medwiss/Dokumente/Medizin/…`, and ALWAYS re-verify remote checksums:
-  a multi-source rsync (`api/ search/ … dest/`) once exited 0 while
-  transferring nothing. Never reverse; no Syncthing.
+- Local→VPS transport: one-way rsync push of the whole corpus, HOURLY via the
+  tux user timer `sync-medwiss-corpus.timer` (fires at :49 —
+  `systemctl --user status sync-medwiss-corpus.timer`; script:
+  `~/Projekte/nixos/nixos-vps/scripts/sync-medwiss-corpus.sh`, run with
+  `--apply --delete`, logs in `scripts/logs/sync-medwiss-*.log`). So edits to
+  `md/medlinks.txt`, `md/calculators.txt`, … reach the VPS within the hour —
+  edit locally, wait for the next :49 (or push that one file manually), then
+  reload the page; rsync `-a` preserves the local mtime, `--delete` prunes the
+  VPS mirror when files are removed locally. Never reverse; no Syncthing.
+  (`nixos-vps/modules/medwiss-sync.nix` also defines a parallel DAILY system
+  timer `medwiss-sync.timer` — not imported/not the active mechanism on tux;
+  drift to resolve, see RSI 2026-11-19.)
 - The watcher ingests directly (no import jobs); renames (delete+create with same hash) preserve entry ID + manual tags; `on_moved` handles rsync's temp-file rename.
 - Update branch refreshes only content/hash/hierarchy labels — manual tag edits are never overwritten (tags assigned on CREATE only).
 - Startup reconcile runs in a background thread 2 s after boot and heals drift.
