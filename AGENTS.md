@@ -757,7 +757,13 @@ The app sidebar (`ui/src/routes/+layout.svelte`) is collapsible via a toggle but
 
 ### File Sync Notes (files are the library, PostgreSQL is the index)
 - `~/Dokumente/Medizin` is the single source of truth (`MEDWISS_CONTENT_ROOT` override; VPS: `/srv/medwiss/Dokumente/Medizin` → symlink to `/srv/medwiss/corpus`). **Read-only to the app** — no code path writes there.
-- Local→VPS transport: one-way rsync push, daily `medwiss-sync.timer` + manual `systemctl start medwiss-sync` (corpus sync script on the host; target in `.private/`). Never reverse; no Syncthing.
+- Local→VPS transport: one-way rsync push (verified 2026-11-19: no
+  `medwiss-sync.service`/`.timer` exists on the VPS — the unit described here
+  earlier was never created). Push changed corpus files directly with
+  `rsync --rsync-path="sudo -u medwiss rsync" -e 'ssh -p 38215' …
+  k007074@10.77.77.1:/srv/medwiss/Dokumente/Medizin/…` and ALWAYS re-verify
+  remote checksums: a multi-source rsync (`api/ search/ … dest/`) once exited 0
+  while transferring nothing. Never reverse; no Syncthing.
 - The watcher ingests directly (no import jobs); renames (delete+create with same hash) preserve entry ID + manual tags; `on_moved` handles rsync's temp-file rename.
 - Update branch refreshes only content/hash/hierarchy labels — manual tag edits are never overwritten (tags assigned on CREATE only).
 - Startup reconcile runs in a background thread 2 s after boot and heals drift.
