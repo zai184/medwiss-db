@@ -28,6 +28,14 @@
   reload or reboot will stop the sync until it is re-armed. The parallel
   `modules/medwiss-sync.nix` daily system timer is not active. AGENTS.md
   File-Sync section corrected accordingly.
+- **Sync re-armed (2026-11-19 16:16).** Wrote fresh
+  `~/.config/systemd/user/sync-medwiss-corpus.{timer,service}`
+  (`OnBootSec=10min` + `OnUnitActiveSec=1h` per house rule — no OnCalendar on
+  user units; service runs the nixos-vps script with `--apply --delete`),
+  `daemon-reload` + `enable --now`: first run finished clean at 16:16:59,
+  next fire 17:16:58. The ghost unit is replaced by a disk-backed one.
+  Remaining drift: `modules/medwiss-sync.nix` (daily system timer) still
+  inactive — resolve or delete.
 
 ## [Unreleased] - 2026-11-17
 ### Fixed (2026-11-17)

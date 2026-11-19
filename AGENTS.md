@@ -758,17 +758,18 @@ The app sidebar (`ui/src/routes/+layout.svelte`) is collapsible via a toggle but
 ### File Sync Notes (files are the library, PostgreSQL is the index)
 - `~/Dokumente/Medizin` is the single source of truth (`MEDWISS_CONTENT_ROOT` override; VPS: `/srv/medwiss/Dokumente/Medizin` → symlink to `/srv/medwiss/corpus`). **Read-only to the app** — no code path writes there.
 - Local→VPS transport: one-way rsync push of the whole corpus, HOURLY via the
-  tux user timer `sync-medwiss-corpus.timer` (fires at :49 —
-  `systemctl --user status sync-medwiss-corpus.timer`; script:
-  `~/Projekte/nixos/nixos-vps/scripts/sync-medwiss-corpus.sh`, run with
-  `--apply --delete`, logs in `scripts/logs/sync-medwiss-*.log`). So edits to
-  `md/medlinks.txt`, `md/calculators.txt`, … reach the VPS within the hour —
-  edit locally, wait for the next :49 (or push that one file manually), then
-  reload the page; rsync `-a` preserves the local mtime, `--delete` prunes the
-  VPS mirror when files are removed locally. Never reverse; no Syncthing.
-  (`nixos-vps/modules/medwiss-sync.nix` also defines a parallel DAILY system
-  timer `medwiss-sync.timer` — not imported/not the active mechanism on tux;
-  drift to resolve, see RSI 2026-11-19.)
+  tux user timer `sync-medwiss-corpus.timer` (`~/.config/systemd/user/`,
+  `OnBootSec=10min` + `OnUnitActiveSec=1h`, enabled; re-armed 2026-11-19 after
+  the previous unit had been deleted from disk and only survived as a ghost in
+  the loaded user manager). Script:
+  `~/Projekte/nixos/nixos-vps/scripts/sync-medwiss-corpus.sh --apply --delete`
+  (logs in `scripts/logs/sync-medwiss-*.log`). Edits to `md/medlinks.txt`,
+  `md/calculators.txt`, … reach the VPS within the hour — edit locally, wait
+  for the next hourly run, reload the page; rsync `-a` preserves the local
+  mtime, `--delete` prunes the VPS mirror when files are removed locally.
+  Never reverse; no Syncthing. (`nixos-vps/modules/medwiss-sync.nix` defines a
+  parallel DAILY system timer `medwiss-sync.timer` — not active on tux; drift
+  to resolve or delete.)
 - The watcher ingests directly (no import jobs); renames (delete+create with same hash) preserve entry ID + manual tags; `on_moved` handles rsync's temp-file rename.
 - Update branch refreshes only content/hash/hierarchy labels — manual tag edits are never overwritten (tags assigned on CREATE only).
 - Startup reconcile runs in a background thread 2 s after boot and heals drift.
